@@ -1,5 +1,10 @@
 # Local V1 validation — 2026-10-30
 
+## Initial implementation evidence (historical)
+
+The following records the original implementation before remote delivery. The
+source-check semantics and current validation are updated in the final section.
+
 This is local delivery evidence, not independent human approval, remote CI or
 live-publication evidence. The public target repositories were unavailable as
 independent repositories during implementation. No remote repository, PR,
@@ -62,3 +67,27 @@ digest formats are now required. This review does not constitute human approval.
 The follow-up review also reproduced an escaped CSS import. The constrained
 stylesheet audit now rejects CSS escapes and external image/resource syntax;
 negative tests cover escaped imports and image-set string sources.
+
+## Source verification gate regression — 2026-10-30
+
+The mandatory gate now verifies the pinned commit and evidence independently of
+the mutable default branch. Ten new regression tests exercise the real verifier
+and CLI with controlled responses at the external network boundary. They cover
+verified matching heads, advisory movement, unavailable/malformed branch reads,
+missing or mismatched pinned commits, missing/empty evidence, changed/missing
+public/license/identity metadata, unavailable sources and allowlist violations.
+The previous code failed the new drift/advisory regressions before correction.
+
+The full 26-test suite passes. Generator `--check`, independent-directory
+reproducibility and static audit pass. All generated files, SVGs and the manifest
+remain byte-identical. All 13 Profile `site/` files match the live Pages feature
+snapshot `79bd3111912150bdeab8b79f252b11e9360e3d19`; that repository was inspected
+read-only for parity. The stale local Pages checkout was not used as live proof.
+
+Live anonymous source verification passes the mandatory checks for all three
+public MIT snapshots, including nine evidence files. FastAPI upstream movement
+is separately recorded as `DRIFT_FOUND` and reviewed in `public-source-review.md`;
+it no longer turns valid snapshot evidence into a failing check. Exact-head
+remote CI must be checked after pushing this change; local tests alone do not
+prove remote CI or human approval. No visual/browser scan is claimed for this
+verification-only change; the original visual evidence remains historical.

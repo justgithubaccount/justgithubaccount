@@ -16,10 +16,27 @@ python3 -m http.server 8765 --bind 127.0.0.1 --directory site
 ```
 
 The last verification command makes anonymous, read-only requests to public
-GitHub metadata and exact revision URLs. It fails on source drift, unavailable
-evidence or rate limiting; unavailable evidence is UNKNOWN, never a passing check.
-It verifies source identity, public visibility, MIT metadata, revision and file
-availability. A human must verify that the copy still matches the code.
+GitHub metadata and exact revision URLs. It separates two questions:
+
+- **Mandatory snapshot verification:** the manifest passes the repository/path
+  allowlist, current repository identity/public visibility/MIT metadata match,
+  the exact pinned commit resolves to that SHA, and every pinned evidence file
+  is accessible and nonempty. Missing or changed metadata, a missing/mismatched
+  commit, unavailable/empty evidence or an allowlist violation returns exit 1.
+  Rate limiting or network failure during these checks also returns exit 1;
+  unavailable evidence is not proof and cannot pass the gate.
+- **Advisory upstream observation:** after verifying the snapshot, compare the
+  default-branch head with the pin. Output `snapshot_status: VERIFIED` independently
+  of `upstream_status`: `VERIFIED` means the head equals the pin; `DRIFT_FOUND`
+  means it differs; `UNKNOWN` with `main_sha: null` means the branch observation
+  was unavailable or malformed. Drift and unknown observations are reported in
+  JSON and stderr but do not invalidate a verified snapshot or change the pin.
+
+Exit 0 means every mandatory snapshot check passed, not that every upstream head
+is unchanged. CI uses this same contract. An upstream warning calls for a focused
+source/copy review; it does not automatically adopt new code or approve publication.
+A human must verify that the copy matches the cited snapshot. Never use upstream
+`DRIFT_FOUND` or `UNKNOWN` as a substitute for missing pinned evidence.
 
 The builder creates `README.md`, `assets/*.svg` and the complete `site/` directory.
 It uses no time, random seed, machine path or Git working-tree state in output.
