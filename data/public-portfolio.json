@@ -1,0 +1,63 @@
+{
+  "schema_version": "public-portfolio.v1",
+  "reviewed_on": "2026-10-30",
+  "publication_state": "DRAFT",
+  "identity": {
+    "handle": "justgithubaccount",
+    "name": "Jenya",
+    "headline": "Software. Infrastructure. Connected.",
+    "intro": "From a working application to a repeatable delivery path. Explore my public engineering lab across Python APIs, cloud infrastructure and GitOps.",
+    "focus_title": "A clearer path from code to delivery.",
+    "focus_intro": "These projects explore three connected engineering problems. Each one links to the implementation so you can inspect the decisions, boundaries and code."
+  },
+  "projects": [
+    {
+      "id": "k8s",
+      "repository": "justgithubaccount/app-poly-gitops-k8s",
+      "revision": "8f4f31226fd591ad027750fd65e66385db58cb55",
+      "visibility": "PUBLIC",
+      "license": "MIT",
+      "title": "Deployment, made explicit.",
+      "category": "GitOps platform",
+      "problem": "How do application and platform changes share one reviewable delivery path?",
+      "description": "Argo CD and Kustomize definitions connect applications, networking and observability. Separate development and smoke roots make the intended environments readable in Git.",
+      "boundary": "Desired-state definitions in an engineering lab; no running cluster is implied.",
+      "tags": ["Kubernetes", "Argo CD", "Kustomize"],
+      "evidence": ["README.md", "clusters/dev/kustomization.yaml", "clusters/smoke/kustomization.yaml"],
+      "focus": "Reviewable deployments",
+      "focus_detail": "Express the desired environment in Git, with explicit application and platform boundaries."
+    },
+    {
+      "id": "infra",
+      "repository": "justgithubaccount/app-poly-gitops-infra",
+      "revision": "7e0bca62bc4a0f69f314769bac3964acda275de7",
+      "visibility": "PUBLIC",
+      "license": "MIT",
+      "title": "Infrastructure, repeatable.",
+      "category": "Cloud infrastructure",
+      "problem": "How do you make environment setup easier to repeat and inspect?",
+      "description": "Terraform provisioning and Argo CD bootstrap describe the route from cloud resources to application delivery. Bounded smoke and cleanup workflows make the lifecycle explicit.",
+      "boundary": "Provisioning code and workflows; no currently running environment or billing guarantee is claimed.",
+      "tags": ["Terraform", "Python", "GitHub Actions"],
+      "evidence": ["README.md", "terraform/timeweb/main.tf", ".github/workflows/timeweb-smoke.yaml"],
+      "focus": "Repeatable environments",
+      "focus_detail": "Keep provisioning, bootstrap and cleanup steps visible instead of relying on undocumented setup."
+    },
+    {
+      "id": "fastapi",
+      "repository": "justgithubaccount/app-poly-gitops-fastapi",
+      "revision": "899ba6434745390c44c6965a0ebe48f3515a7170",
+      "visibility": "PUBLIC",
+      "license": "MIT",
+      "title": "AI chat, with a backend.",
+      "category": "Python application",
+      "problem": "What sits between a chat interface and an LLM provider?",
+      "description": "A FastAPI service with project-scoped conversations, stored transcripts and OpenTelemetry instrumentation. Provider failures are handled separately from successful chat history.",
+      "boundary": "Application code in an engineering lab; no hosted commercial service or customer results are claimed.",
+      "tags": ["Python", "FastAPI", "OpenTelemetry"],
+      "evidence": ["README.md", "app/api.py", "app/core/llm_client.py"],
+      "focus": "Traceable AI applications",
+      "focus_detail": "Connect API behavior, conversation persistence and telemetry in one inspectable backend."
+    }
+  ]
+}

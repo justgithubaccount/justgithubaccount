@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}"/>
+  <meta name="robots" content="{{robots}}"/>
+  <meta name="color-scheme" content="dark"/>
+  <meta name="theme-color" content="#080c1c"/>
+  <link rel="canonical" href="https://justgithubaccount.github.io/"/>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="{{title}}"/>
+  <meta property="og:description" content="{{description}}"/>
+  <meta property="og:url" content="https://justgithubaccount.github.io/"/>
+  <script type="application/ld+json">{{json_ld}}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="header wrap">
+    <a class="identity" href="#main" aria-label="{{name}} — back to top"><span class="identity-orbit" aria-hidden="true"></span>{{name}}<span class="identity-handle"> / justgithubaccount</span></a>
+    <nav aria-label="Main navigation"><a href="#work">Work</a><a href="#approach">Approach</a><a href="https://github.com/justgithubaccount">GitHub <span aria-hidden="true">↗</span></a></nav>
+  </header>
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-copy"><h1 id="hero-title">{{hero_lines}}</h1>
+      <p class="hero-intro">{{intro}}</p>
+      <a class="button" href="#work">Explore the work <span aria-hidden="true">↗</span></a>
+      <p class="hero-note">Public code. Open to inspection.</p></div>
+      <div class="hero-visual"><img src="assets/orbital.svg" alt="Original blue and violet orbital artwork with two interwoven strands." width="600" height="640" fetchpriority="high"/><span class="visual-caption" aria-hidden="true">APPLICATION · INFRASTRUCTURE · DELIVERY</span></div>
+    </section>
+    <section class="work wrap" id="work" aria-labelledby="work-title">
+      <div class="section-heading"><h2 id="work-title">Selected work<span class="count"> / 03</span></h2><p>Three connected projects.<br/>One inspectable engineering lab.</p></div>
+      {{projects}}
+    </section>
+    <section class="approach" id="approach" aria-labelledby="approach-title"><div class="wrap">
+      <div class="approach-intro"><h2 id="approach-title">{{focus_title}}</h2><p>{{focus_intro}}</p></div>
+      <ol class="focus-list">{{focus}}</ol>
+    </div></section>
+    <section class="closing wrap" aria-labelledby="closing-title"><div><h2 id="closing-title">Start with the source.</h2><p>Explore the code, read the decisions, follow the work.</p></div><a class="button button-outline" href="https://github.com/justgithubaccount">Browse GitHub <span aria-hidden="true">↗</span></a></section>
+  </main>
+  <footer class="footer wrap"><p>{{name}} / justgithubaccount</p><p>Software, infrastructure &amp; the connections between.</p><a href="llms.txt">Text overview</a></footer>
+</body>
+</html>
