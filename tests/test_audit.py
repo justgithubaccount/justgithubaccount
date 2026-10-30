@@ -48,6 +48,10 @@ class AuditTests(unittest.TestCase):
             ('<body>', '<body><p>192.168.1.1</p>'),
             ('href="styles.css"', 'href="../outside.css"'),
             ('<main id="main">', '<main id="work">'),
+            ('<body>', '<body><style>@import "https://evil.example/style.css";</style>'),
+            ('<body>', '<body><meta http-equiv="refresh" content="0;url=https://evil.example"/>'),
+            ('<img src=', '<img srcset="https://evil.example/image.svg 2x" src='),
+            ('<body>', '<body><a href="#work" ping="https://evil.example/log">work</a>'),
         ]
         for before, after in mutations:
             with self.subTest(after=after), tempfile.TemporaryDirectory() as tmp:
@@ -69,6 +73,41 @@ class AuditTests(unittest.TestCase):
                 target.write_text(base.replace('</svg>', extra + '</svg>'))
                 with self.assertRaises(ValueError):
                     audit.audit_svg(target)
+
+    def test_svg_rejects_stylesheet_processing_instructions_and_paint_bypasses(self):
+        base = build.render(self.data)['assets/hero.svg']
+        mutations = [
+            '<?xml-stylesheet type="text/css" href="https://evil.example/style.css"?>' + base,
+            base.replace('fill="url(#glow)"', 'fill="URL(//evil.example/image.svg#paint)"'),
+            base.replace('fill="url(#glow)"', 'fill="u\\72l(//evil.example/image.svg#paint)"'),
+            base.replace('role="img"', 'role="img" xml:base="//evil.example/"'),
+        ]
+        for svg in mutations:
+            with self.subTest(svg=svg[:80]), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / 'x.svg'
+                target.write_text(svg)
+                with self.assertRaises(ValueError):
+                    audit.audit_svg(target)
+
+    def test_inventory_cannot_admit_unchecked_files_or_drop_required_metadata(self):
+        for mutation in ('added-html', 'omitted-file', 'missing-manifest-hash', 'invalid-generator-hash'):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as tmp:
+                out = Path(tmp)
+                build.export_pages(self.data, out)
+                info = json.loads((out / 'build-info.json').read_text())
+                if mutation == 'added-html':
+                    payload = '<script src="https://evil.example/script.js"></script>'
+                    (out / 'extra.html').write_text(payload)
+                    info['files']['extra.html'] = hashlib.sha256(payload.encode()).hexdigest()
+                elif mutation == 'omitted-file':
+                    del info['files']['llms.txt']
+                elif mutation == 'missing-manifest-hash':
+                    del info['manifest_sha256']
+                else:
+                    info['generator_sha256'] = 'not-a-digest'
+                (out / 'build-info.json').write_text(json.dumps(info))
+                with self.assertRaises(ValueError):
+                    audit.audit_site(out)
 
 
 if __name__ == '__main__':
