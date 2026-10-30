@@ -65,15 +65,20 @@ website PR description after that commit exists remotely.
 
 ## Publication gate
 
-The checked-in manifest is `DRAFT`. This produces `noindex, nofollow`, a disallow
-robots rule and a profile link labelled publication pending. Its canonical and
-sitemap describe the intended root URL, not evidence that the website is live.
-The GitHub README link to `site/index.html` opens the source file on GitHub; use
-the local HTTP preview to view the actual website before publication.
+The checked-in manifest is `RELEASE_APPROVED` as an operator-authorized
+**release-review candidate**, following acceptance of V1 content and design.
+This switches the generated HTML to `index, follow`, `robots.txt` to `Allow: /`
+and the Profile README link to the intended root Pages URL. It does **not**
+create a deployment, prove the root URL is live or authorize a merge.
 
-Only after explicit content, source and rights approval may a separate reviewed
-change set `publication_state` to `RELEASE_APPROVED` and regenerate. That enables
-indexing and the profile's root Pages link. It does not prove publication.
+The generator's `DRAFT` mode remains supported and tested separately: it emits
+`noindex, nofollow`, `Disallow: /` and a publication-pending README link.
+Canonical/sitemap URLs in either mode identify the intended site, not its
+runtime status. Continue using the local HTTP preview before publication.
+
+Merge, Pages configuration/reactivation, actual publication and final public
+content/rights/source checks require **separate explicit operator release
+authorization**, followed by live root-URL and rendered GitHub profile checks.
 There is deliberately no Pages deploy workflow, privileged cross-repository token,
 merge automation or runtime dependency. Enabling Pages and merging remain
 separate operator decisions. Verify the final live root URL before recording

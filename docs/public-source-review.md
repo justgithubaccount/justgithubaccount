@@ -64,3 +64,18 @@ without erasing verified pinned evidence. Neither automatically updates a pin.
 Description accuracy also requires human review. A source-check PASS does not
 establish source CI health, runtime availability, rights to legacy imagery,
 customer acceptance, publication, attention, inquiries or revenue.
+
+## GitOps upstream review — 2026-10-30
+
+The pinned GitOps source remains
+`8f4f31226fd591ad027750fd65e66385db58cb55`; its public `main` was
+observed at `2033b80531de7294bb7cafe64c0488ca6b51146d` during release
+candidate preparation. The [one-commit comparison](https://github.com/justgithubaccount/app-poly-gitops-k8s/compare/8f4f31226fd591ad027750fd65e66385db58cb55...2033b80531de7294bb7cafe64c0488ca6b51146d)
+refines GitOps ownership and dormant application entrypoints, adds related
+tests and expands the README. Both cited Kustomize roots under `clusters/dev`
+and `clusters/smoke` were byte-identical at both SHAs; the pinned README remains
+public and describes their reviewed GitOps intended state.
+
+This is advisory upstream `DRIFT_FOUND`, not broken pinned evidence or an
+automatic reason to repin. The existing portfolio claim remains bounded to
+reviewable GitOps desired-state definitions. No live cluster is claimed.
