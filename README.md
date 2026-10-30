@@ -9,7 +9,7 @@
 
 From a working application to a repeatable delivery path. Explore my public engineering lab across Python APIs, cloud infrastructure and GitOps.
 
-[Portfolio website — publication pending](site/index.html) · [Browse my GitHub](https://github.com/justgithubaccount)
+[Explore the portfolio](https://justgithubaccount.github.io/) · [Browse my GitHub](https://github.com/justgithubaccount)
 
 ## Selected public projects
 

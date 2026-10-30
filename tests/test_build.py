@@ -69,7 +69,9 @@ class BuildTests(unittest.TestCase):
             self.assertFalse(any(x in svg for x in ('<image', 'foreignObject', '<script', 'base64', 'href=', '@font-face')))
 
     def test_draft_does_not_claim_a_live_website(self):
-        files = self.b.render(self.data)
+        d = copy.deepcopy(self.data)
+        d['publication_state'] = 'DRAFT'
+        files = self.b.render(d)
         self.assertIn('noindex, nofollow', files['site/index.html'])
         self.assertIn('Disallow: /', files['site/robots.txt'])
         self.assertNotIn('](https://justgithubaccount.github.io/)', files['README.md'])
