@@ -7,7 +7,7 @@ reported MIT licensing. Exact source links are generated from the manifest.
 | Project | Source revision proposed for this V1 | Evidence supporting the description |
 | --- | --- | --- |
 | GitOps platform | `8f4f31226fd591ad027750fd65e66385db58cb55` | README plus development and smoke Kustomize roots: Argo CD desired state and environment boundaries |
-| Cloud infrastructure | `7e0bca62bc4a0f69f314769bac3964acda275de7` | README, Terraform configuration and smoke workflow: provisioning, bootstrap and bounded lifecycle |
+| Cloud infrastructure | `cb7c88f84e9f796e4725fc0a218fe68e3785a72e` | README, Terraform configuration and smoke workflow: provisioning, bootstrap and bounded lifecycle |
 | Python application | `899ba6434745390c44c6965a0ebe48f3515a7170` | README, API routes and provider client: project history, provider errors and telemetry |
 
 The earlier brief referenced `c8b9b68cb5b800b247c0ee8b1cc1e7770c9b57d1`,
@@ -17,6 +17,13 @@ have changed materially. That difference is **DRIFT_FOUND against the earlier
 snapshot**, not silently substituted approval. This local draft proposes the
 newer inspected snapshots for source/content review. It does not widen the
 three-repository allowlist or authorize publication.
+
+The authorized source refresh on 2026-10-30 replaces the infrastructure pin
+`7e0bca62bc4a0f69f314769bac3964acda275de7` with the verified public main revision
+`cb7c88f84e9f796e4725fc0a218fe68e3785a72e`. The one-commit comparison updates
+operator contracts, tooling and documentation. The cited Terraform configuration
+and smoke workflow are unchanged; the updated README still supports provisioning,
+Argo CD bootstrap and bounded cleanup. The portfolio description is unchanged.
 
 The public first name comes from the existing intro README at
 `c2c8b19fd010d8a52b4c2b276a30a032cb4e6fc7`. No family name, email, social handle,

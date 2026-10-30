@@ -39,7 +39,7 @@ Terraform provisioning and Argo CD bootstrap describe the route from cloud resou
 
 Provisioning code and workflows; no currently running environment or billing guarantee is claimed.
 
-[Read the source](https://github.com/justgithubaccount/app-poly-gitops-infra/blob/7e0bca62bc4a0f69f314769bac3964acda275de7/README.md) · Revision `7e0bca62bc4a`
+[Read the source](https://github.com/justgithubaccount/app-poly-gitops-infra/blob/cb7c88f84e9f796e4725fc0a218fe68e3785a72e/README.md) · Revision `cb7c88f84e9f`
 
 <a href="https://github.com/justgithubaccount/app-poly-gitops-fastapi">
   <picture>
