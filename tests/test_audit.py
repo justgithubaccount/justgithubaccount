@@ -109,6 +109,21 @@ class AuditTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     audit.audit_site(out)
 
+    def test_stylesheet_rejects_escaped_import_and_string_image_resources(self):
+        for css in ['@\\69mport "https://evil.example/style.css";',
+                    'body{background-image:image-set("https://evil.example/image.png" 1x)}',
+                    '@import "//evil.example/style.css";']:
+            with self.subTest(css=css), tempfile.TemporaryDirectory() as tmp:
+                out = Path(tmp)
+                build.export_pages(self.data, out)
+                target = out / 'styles.css'
+                target.write_text(css + target.read_text())
+                info = json.loads((out / 'build-info.json').read_text())
+                info['files']['styles.css'] = hashlib.sha256(target.read_bytes()).hexdigest()
+                (out / 'build-info.json').write_text(json.dumps(info))
+                with self.assertRaises(ValueError):
+                    audit.audit_site(out)
+
 
 if __name__ == '__main__':
     unittest.main()
