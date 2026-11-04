@@ -44,11 +44,11 @@ Provisioning code and workflows; no currently running environment or billing gua
 <a href="https://github.com/justgithubaccount/app-poly-gitops-fastapi">
   <picture>
     <source media="(max-width: 600px)" srcset="assets/project-fastapi-compact.svg"/>
-    <img src="assets/project-fastapi.svg" alt="Applications &amp; services: AI chat, with a backend. Python, FastAPI, OpenTelemetry."/>
+    <img src="assets/project-fastapi.svg" alt="Applications &amp; services: AI chat, from UI to API. Python, FastAPI, OpenTelemetry."/>
   </picture>
 </a>
 
-A FastAPI service with project-scoped conversations, stored transcripts and OpenTelemetry instrumentation. Provider failures are handled separately from successful chat history.
+The app-poly-gitops lab includes a standalone browser UI for projects and chat alongside this FastAPI service for project conversations, stored transcripts and telemetry. GitOps delivery is defined in the related infrastructure repositories.
 
 Application code in an engineering lab; no hosted commercial service or customer results are claimed.
 

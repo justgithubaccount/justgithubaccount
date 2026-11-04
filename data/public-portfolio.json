@@ -59,7 +59,7 @@
     {
       "boundary": "Application code in an engineering lab; no hosted commercial service or customer results are claimed.",
       "category": "Applications & services",
-      "description": "A FastAPI service with project-scoped conversations, stored transcripts and OpenTelemetry instrumentation. Provider failures are handled separately from successful chat history.",
+      "description": "The app-poly-gitops lab includes a standalone browser UI for projects and chat alongside this FastAPI service for project conversations, stored transcripts and telemetry. GitOps delivery is defined in the related infrastructure repositories.",
       "evidence": [
         "README.md",
         "app/api.py",
@@ -69,7 +69,7 @@
       "focus_detail": "Connect API behavior, conversation persistence and telemetry in one inspectable backend.",
       "id": "fastapi",
       "license": "MIT",
-      "problem": "What sits between a chat interface and an LLM provider?",
+      "problem": "How do browser interactions connect to chat APIs and application state?",
       "repository": "justgithubaccount/app-poly-gitops-fastapi",
       "revision": "899ba6434745390c44c6965a0ebe48f3515a7170",
       "tags": [
@@ -77,7 +77,7 @@
         "FastAPI",
         "OpenTelemetry"
       ],
-      "title": "AI chat, with a backend.",
+      "title": "AI chat, from UI to API.",
       "visibility": "PUBLIC"
     }
   ],
