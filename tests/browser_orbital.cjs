@@ -43,6 +43,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
         assert.equal(new URL(page.url()).pathname, '/');
         assert.equal(await page.locator('h1').innerText(), 'Software.\nInfrastructure.\nConnected.');
         assert.equal(await page.locator('.project').count(), 3);
+        assert.equal(await page.locator('.orbital-art svg > rect').count(), 0, 'inline hero has no opaque canvas');
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
         await action(page, context);
         await page.screenshot({path:path.join(output, `${name}.png`), fullPage:true});

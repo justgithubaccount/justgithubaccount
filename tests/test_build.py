@@ -123,6 +123,28 @@ class BuildTests(unittest.TestCase):
         self.assertNotIn('<script', files['README.md'])
         self.assertNotIn('orbital-static-helix', files['assets/hero.svg'])
 
+    def test_only_inline_hero_has_transparent_background(self):
+        files = self.b.render(self.data)
+        page = files['site/index.html']
+        inline = ET.fromstring(page[page.index('<svg '):page.index('</svg>') + 6])
+        ns = {'s': 'http://www.w3.org/2000/svg'}
+        backdrop = {'width': '600', 'height': '640', 'fill': '#080c1c'}
+        self.assertFalse(any(all(node.get(k) == v for k, v in backdrop.items())
+                             for node in inline.findall('.//s:rect', ns)))
+        standalone = ET.fromstring(files['site/assets/orbital.svg'])
+        self.assertEqual(standalone.find('s:rect', ns).attrib, backdrop)
+        # Removing the canvas is the only geometry change: glow, stars, orbits
+        # and helix remain byte-identical, including the inert first frame.
+        self.assertEqual(
+            self.b.art.field('hero'),
+            '<rect width="600" height="640" fill="#080c1c"/>'
+            + self.b.art.field('hero', background=False),
+        )
+        self.assertIsNotNone(inline.find('s:ellipse[@fill="url(#orbital-glow)"]', ns))
+        glow = inline.find('.//s:radialGradient[@id="orbital-glow"]', ns)
+        self.assertEqual(list(glow)[-1].attrib['stop-opacity'], '0')
+        self.assertIsNotNone(inline.find('s:g[@id="orbital-static-helix"]', ns))
+
     def test_structured_data_has_only_evidenced_projects(self):
         files = self.b.render(self.data)
         data = json.loads(files['site/structured-data.json'])

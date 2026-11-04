@@ -42,7 +42,7 @@ def constellation(width, height):
     return ''.join(f'<circle cx="{(i*137+29)%width}" cy="{(i*89+41)%height}" r="{1 if i%4 else 1.7}" fill="#9fafff" opacity="{.15+(i%5)*.1:.2f}"/>' for i in range(48))
 
 
-def field(kind='k8s'):
+def field(kind='k8s', *, background=True):
     orbital = '''<circle cx="300" cy="310" r="224" fill="none" stroke="#525caa" opacity=".25"/>
 <circle cx="300" cy="310" r="190" fill="none" stroke="#454b8b" opacity=".28" stroke-dasharray="2 12"/>
 <ellipse cx="300" cy="310" rx="265" ry="95" transform="rotate(-32 300 310)" fill="none" stroke="#7f78dc" opacity=".32"/>
@@ -69,7 +69,8 @@ def field(kind='k8s'):
             else:
                 core += f'<circle cx="{x}" cy="{y}" r="20" fill="none" stroke="#b5b6ef"/><path d="M{x-9} {y} h18 M{x} {y-9} v18" stroke="#b5b6ef"/>'
             core += f'<circle cx="{x}" cy="{y+40}" r="3" fill="#8bdcff"/>'
-    return '<rect width="600" height="640" fill="#080c1c"/><ellipse cx="300" cy="320" rx="300" ry="340" fill="url(#glow)"/>' + constellation(600, 640) + orbital + core
+    canvas = '<rect width="600" height="640" fill="#080c1c"/>' if background else ''
+    return canvas + '<ellipse cx="300" cy="320" rx="300" ry="340" fill="url(#glow)"/>' + constellation(600, 640) + orbital + core
 
 
 def artwork(kind, title):
@@ -78,7 +79,7 @@ def artwork(kind, title):
 
 def interactive_artwork():
     """Inline, inert first frame. Profile/image assets retain their exact bytes."""
-    body = field('hero')
+    body = field('hero', background=False)
     stars = constellation(600, 640)
     body = body.replace(stars, '<g id="orbital-field">' + stars, 1)
     braid = helix(300, 92, 434, 62)

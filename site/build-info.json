@@ -7,14 +7,14 @@
     "assets/favicon.svg": "a95cd7eef6504280319f257e50bbf42849e126d094231b16b4b3c15f0ade8352",
     "assets/orbital.js": "f885e9264e853569298c1118cb932c51e9c8cd68329ae35c7f1b979039c59e02",
     "assets/orbital.svg": "128f276306e2d32b1d9ae54a52ff2bc9c4116a2313a61677f270d3fba2ca66d7",
-    "index.html": "bcc65d6b3e73dff8a298b8beb6f18dc42427ceb1ce9f24747fc2c8a594466157",
+    "index.html": "c322d6edeb311db3c9b18d7375381b4fda82013357687cb032e505775efe9849",
     "llms.txt": "9ebba474553585e1747f0da36f33aacf11392ef8a65726b057cc13b3e4803175",
     "robots.txt": "711cd7aa9b659472622e4265097c05219e57ca272722279d89ff125e082c4793",
     "sitemap.xml": "8f67941ae7102c473ad10200078f56b0fcbebd3b6dec0611ad2050c4a898b1c6",
     "structured-data.json": "2d2446a589040beb46a9fbe6ac38519bb1eefdcad553cb334ab2012f316e40cc",
     "styles.css": "5c922ee72e0bfb012ef8418d2681ad81aad8b3139307f41510749b59a5d254d9"
   },
-  "generator_sha256": "b9f5dd922af8f80b4ef0b5d1a0425027e571b86ab7a5932f917ccc7291a0a467",
+  "generator_sha256": "2528b00ca6a484cc8ce8057dd533f8cf0ae69b68ebc3f3e8d2e1db32dcbba209",
   "manifest_sha256": "6251ee083d76b683942e874905249a52ec4ad9f60f682aa948c5d231881c3e57",
   "publication_state": "RELEASE_APPROVED",
   "schema_version": "portfolio-export.v1"

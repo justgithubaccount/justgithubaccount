@@ -102,7 +102,7 @@ screenshots. Check the README through GitHub's Markdown renderer, then view it
 at mobile and desktop widths on both light and dark surrounds. A local GitHub
 Markdown preview does not prove the special profile or GitHub image proxy is live.
 
-The website intentionally uses the dark art direction in either OS theme. SVGs
+The website intentionally uses the dark art direction in either OS theme. Standalone SVGs
 have their own opaque backgrounds and system fonts; no web fonts, external
 resources, raster payloads or vendor emblems are used. The website has one
 optional local script; Profile README SVG images remain completely static.
@@ -110,7 +110,9 @@ optional local script; Profile README SVG images remain completely static.
 ## Interactive orbital hero
 
 `PUBLIC_PORTFOLIO_INTERACTIVE_ORBITAL_V1` adds progressive enhancement only to
-Pages HTML. The builder embeds a complete, described static SVG. JavaScript
+Pages HTML. The builder embeds a complete, described static SVG with a transparent
+canvas so its radial glow blends into the page gradient. Standalone Profile and
+website image assets keep their opaque backgrounds. JavaScript
 adds separate front/back strand paths using a variable phase, retains the
 original paths for fallback, and moves only the orbital field by at most six
 horizontal and four vertical SVG units. Frames are requested only during input
