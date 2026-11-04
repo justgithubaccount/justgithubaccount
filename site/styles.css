@@ -14,7 +14,8 @@
 body{background:radial-gradient(ellipse 58rem 38rem at 76% 24rem,rgba(109,86,201,.14),transparent 72%),radial-gradient(ellipse 30rem 28rem at 11% 64rem,rgba(68,151,186,.055),transparent 78%),var(--bg)}
 ::selection{background:#766aca;color:#fff}
 .header{border-bottom-color:#424766}
-.identity-orbit{box-shadow:0 0 22px rgba(143,130,252,.12)}
+.identity-orbit{box-shadow:0 0 22px rgba(143,130,252,.12);animation:identity-orbit-spin 16s linear infinite}
+@keyframes identity-orbit-spin{from{transform:rotate(-35deg)}to{transform:rotate(325deg)}}
 nav a{position:relative;transition:color .2s ease}
 nav a::after{content:"";position:absolute;left:0;right:0;bottom:5px;height:1px;background:var(--cyan);transform:scaleX(0);transform-origin:left;transition:transform .2s ease}
 nav a:hover::after,nav a:focus-visible::after{transform:scaleX(1)}
@@ -64,5 +65,5 @@ details[open] summary{color:var(--accent)}
 .is-playing #orbital-moving-helix{filter:drop-shadow(0 0 3px rgba(150,219,245,.45))}
 [hidden]{display:none!important}
 @media(max-width:720px){.orbital-art{max-height:410px;max-width:384.375px;margin-inline:auto}.orbital-controls{margin-top:14px}}
-@media(prefers-reduced-motion:reduce){.helix-control,.orbital-controls,#orbital-moving-helix{display:none!important}#orbital-static-helix{visibility:visible}}
+@media(prefers-reduced-motion:reduce){.identity-orbit{animation:none}.helix-control,.orbital-controls,#orbital-moving-helix{display:none!important}#orbital-static-helix{visibility:visible}}
 @media(forced-colors:active){.helix-control:focus-visible,.orbital-buttons button:focus-visible{outline-color:Highlight}.orbital-buttons button{border-color:ButtonText}}

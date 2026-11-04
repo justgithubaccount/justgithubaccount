@@ -12,9 +12,9 @@
     "robots.txt": "711cd7aa9b659472622e4265097c05219e57ca272722279d89ff125e082c4793",
     "sitemap.xml": "8f67941ae7102c473ad10200078f56b0fcbebd3b6dec0611ad2050c4a898b1c6",
     "structured-data.json": "2d2446a589040beb46a9fbe6ac38519bb1eefdcad553cb334ab2012f316e40cc",
-    "styles.css": "962c2837140f5ca5163a56bd5f96498b5035c29729fcb666a1618140661ecc8d"
+    "styles.css": "3e07f859346aa391c19cba066db13012edf9dc5b4e4a48353b938fd3e165393e"
   },
-  "generator_sha256": "0ea5366a32124b3b253c23faf095d8a4854be47cfa77121c51db844538d5cb3f",
+  "generator_sha256": "706fef32f88c9cdd0a3959d2f98a3bfc340d04cbcb71928ce400a75107008923",
   "manifest_sha256": "6251ee083d76b683942e874905249a52ec4ad9f60f682aa948c5d231881c3e57",
   "publication_state": "RELEASE_APPROVED",
   "schema_version": "portfolio-export.v1"

@@ -22,6 +22,32 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   const url = `http://127.0.0.1:${server.address().port}/`;
   const browser = await chromium.launch({channel: process.env.BROWSER_CHANNEL || 'chrome', headless: true});
   try {
+    async function headerOrbit(page) {
+      const mark=page.locator('.identity-orbit'), link=page.getByRole('link',{name:'Jenya — back to top'});
+      const reduced=await page.evaluate(()=>matchMedia('(prefers-reduced-motion: reduce)').matches);
+      const box=await link.boundingBox();
+      const state=await mark.evaluate(e=>{
+        const css=getComputedStyle(e);
+        return {name:css.animationName,duration:css.animationDuration,easing:css.animationTimingFunction,
+          iterations:css.animationIterationCount,transform:css.transform,after:getComputedStyle(e,'::after').transform};
+      });
+      assert.equal(await mark.getAttribute('aria-hidden'),'true','header mark stays decorative');
+      assert.equal(await link.getAttribute('href'),'#main');
+      assert.equal(await link.evaluate(e=>getComputedStyle(e).transform),'none','name/link do not rotate');
+      assert.equal(state.name,reduced?'none':'identity-orbit-spin');
+      if (!reduced) {
+        assert.equal(state.duration,'16s'); assert.equal(state.easing,'linear'); assert.equal(state.iterations,'infinite');
+      } else {
+        const angle=await mark.evaluate(e=>{const m=new DOMMatrix(getComputedStyle(e).transform);return Math.atan2(m.b,m.a)*180/Math.PI;});
+        assert(Math.abs(angle+35)<.001,'reduced motion keeps -35 degree resting orientation');
+      }
+      await sleep(160);
+      const transform=await mark.evaluate(e=>getComputedStyle(e).transform);
+      if (reduced) assert.equal(transform,state.transform,'reduced motion stays still');
+      else assert.notEqual(transform,state.transform,'CSS rotation advances without input');
+      assert.equal(await mark.evaluate(e=>getComputedStyle(e,'::after').transform),state.after,'second ring retains its relative angle');
+      assert.deepEqual(await link.boundingBox(),box,'animation does not shift the header hit area');
+    }
     async function run(name, options, action, init) {
       const context = await browser.newContext(options);
       const page = await context.newPage();
@@ -45,6 +71,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
         assert.equal(await page.locator('.project').count(), 3);
         assert.equal(await page.locator('.orbital-art svg > rect').count(), 0, 'inline hero has no opaque canvas');
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+        await headerOrbit(page); // also covers no-JS and initial reduced motion
         await action(page, context);
         await page.screenshot({path:path.join(output, `${name}.png`), fullPage:true});
         assert.deepEqual(errors, [], name + ' console/network');
@@ -152,6 +179,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
         assert.equal(await slider.evaluate(e=>e===document.activeElement),true,'pointer focuses helix');
         assert.equal(await play.innerText(),'Pause');
         assert.equal(await play.getAttribute('aria-label'),'Pause helix rotation');
+        await headerOrbit(p);
         await sleep(350);
         assert.notEqual(await geometry(p),initial,'user opt-in rotates strand geometry');
         await p.screenshot({path:path.join(output,`playing-${width}.png`)});
@@ -187,6 +215,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
         await activate(play);
         await p.getByRole('button',{name:'Static artwork'}).click(); await staticVisible(p);
         assert.equal(await play.isDisabled(),true);
+        await headerOrbit(p); // hero static mode must not stop the ornament
         const frames=await p.evaluate(()=>window.qaFrames); await sleep(150);
         assert.equal(await p.evaluate(()=>window.qaFrames),frames);
         await p.getByRole('button',{name:'Static artwork'}).click();
@@ -294,6 +323,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       await p.emulateMedia({reducedMotion:'reduce'});
       await p.waitForFunction(()=>document.querySelector('#orbital-static-helix').getAttribute('visibility') !== 'hidden');
       await staticVisible(p);
+      await headerOrbit(p); // a live reduced-motion change stops CSS as well
       const frames=await p.evaluate(()=>window.qaFrames); await sleep(150);
       assert.equal(await p.evaluate(()=>window.qaFrames),frames);
       await p.emulateMedia({reducedMotion:'no-preference'});

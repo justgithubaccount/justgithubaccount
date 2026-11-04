@@ -107,6 +107,11 @@ have their own opaque backgrounds and system fonts; no web fonts, external
 resources, raster payloads or vendor emblems are used. The website has one
 optional local script; Profile README SVG images remain completely static.
 
+The decorative two-ring header mark rotates independently in CSS, one linear
+turn every 16 seconds from its existing -35° resting orientation. It starts on
+page load, including without JavaScript. Reduced motion disables it and restores
+the resting mark. Hero Play/Pause and Static artwork do not affect the header.
+
 ## Interactive orbital hero
 
 `PUBLIC_PORTFOLIO_INTERACTIVE_ORBITAL_V1` adds progressive enhancement only to
@@ -116,7 +121,7 @@ website image assets keep their opaque backgrounds. JavaScript
 adds separate front/back strand paths using a variable phase, retains the
 original paths for fallback, and moves only the orbital field by at most six
 horizontal and four vertical SVG units. Frames are requested only during input,
-parallax settling or explicitly started rotation. There is no motion on load,
+parallax settling or explicitly started rotation. There is no hero motion on load,
 momentum, external resource or API.
 
 Click/tap the central helix or use **Play** to start a restrained phase rotation
@@ -135,7 +140,7 @@ release/cancel leaves manual rotation stopped. Leaving the controls with keyboar
 focus, losing window focus or hiding the tab also stops Play. Returning never
 resumes it without another explicit action. Hidden/idle states schedule no
 continuing frames; long frame delays are capped to avoid a sudden jump.
-The **Static artwork** toggle restores the original SVG and disables all motion.
+The **Static artwork** toggle restores the original SVG and disables hero motion.
 Reduced motion, missing input support, unavailable/disabled JavaScript and
 initialization or interaction errors keep the static artwork. The OS motion
 preference is also respected if it changes while the page is open.
