@@ -16,6 +16,7 @@
   <meta property="og:description" content="{{description}}"/>
   <meta property="og:url" content="https://justgithubaccount.github.io/"/>
   <script type="application/ld+json">{{json_ld}}</script>
+  <script src="assets/orbital.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -29,7 +30,16 @@
       <p class="hero-intro">{{intro}}</p>
       <a class="button" href="#work">Explore the work <span aria-hidden="true">↗</span></a>
       <p class="hero-note">Public code. Open to inspection.</p></div>
-      <div class="hero-visual"><img src="assets/orbital.svg" alt="Original blue and violet orbital artwork with two interwoven strands." width="600" height="640" fetchpriority="high"/><span class="visual-caption" aria-hidden="true">APPLICATION · INFRASTRUCTURE · DELIVERY</span></div>
+      <div class="hero-visual" id="orbital">
+        <div class="orbital-art">{{orbital_svg}}
+          <div class="helix-control" role="slider" tabindex="0" aria-label="Helix rotation" aria-describedby="orbital-help" aria-valuemin="0" aria-valuemax="359" aria-valuenow="0" aria-valuetext="0 degrees" hidden></div>
+        </div>
+        <span class="visual-caption" aria-hidden="true">APPLICATION · INFRASTRUCTURE · DELIVERY</span>
+        <div class="orbital-controls" hidden>
+          <p id="orbital-help">Drag the helix or use ← → to turn.</p>
+          <div class="orbital-buttons"><button type="button" id="orbital-left" aria-label="Rotate helix left">←</button><button type="button" id="orbital-right" aria-label="Rotate helix right">→</button><button type="button" id="orbital-mode" aria-pressed="false">Static artwork</button></div>
+        </div>
+      </div>
     </section>
     <section class="work wrap" id="work" aria-labelledby="work-title">
       <div class="section-heading"><h2 id="work-title">Selected work<span class="count"> / 03</span></h2><p>Three connected projects.<br/>One inspectable engineering lab.</p></div>

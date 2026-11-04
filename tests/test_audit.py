@@ -125,5 +125,67 @@ class AuditTests(unittest.TestCase):
                     audit.audit_site(out)
 
 
+    def mutate_export(self, mutate):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            build.export_pages(self.data, out)
+            mutate(out)
+            info = json.loads((out / 'build-info.json').read_text())
+            for name in info['files']:
+                info['files'][name] = hashlib.sha256((out / name).read_bytes()).hexdigest()
+            (out / 'build-info.json').write_text(json.dumps(info))
+            with self.assertRaises(ValueError):
+                audit.audit_site(out)
+
+    def test_only_one_exact_local_script_tag_is_allowed(self):
+        tag = '<script src="assets/orbital.js" defer></script>'
+        replacements = [
+            '', tag + tag,
+            '<script src="https://evil.example/orbital.js" defer></script>',
+            '<script src="//evil.example/orbital.js" defer></script>',
+            '<script src="assets/orbital.js?extra" defer></script>',
+            '<script src="assets/../assets/orbital.js" defer></script>',
+            '<script src="assets/%6frbital.js" defer></script>',
+            '<script src="assets/orbital.js" defer async></script>',
+            '<script src="assets/orbital.js" defer onload="alert(1)"></script>',
+            '<script src="assets/orbital.js" defer>alert(1)</script>',
+            '<script type="module" src="assets/orbital.js"></script>',
+            '<script src="assets/orbital.js" src="assets/orbital.js" defer></script>',
+        ]
+        for replacement in replacements:
+            with self.subTest(replacement=replacement):
+                def mutate(out):
+                    p = out / 'index.html'
+                    self.assertIn(tag, p.read_text())
+                    p.write_text(p.read_text().replace(tag, replacement))
+                self.mutate_export(mutate)
+
+    def test_script_tampering_is_rejected_even_with_rehashed_inventory(self):
+        def mutate(out):
+            p = out / 'assets/orbital.js'
+            p.write_text(p.read_text() + '\nfetch("https://evil.example");')
+        self.mutate_export(mutate)
+
+    def test_inline_svg_uses_the_same_static_guard(self):
+        payloads = [
+            '<script>alert(1)</script>', '<foreignObject/>',
+            '<path onclick="alert(1)"/>', '<path fill="url(#missing)"/>',
+            '<path fill="url(https://evil.example)"/>',
+            '<path style="fill:red"/>', '<path id="work"/>',
+            '<?xml-stylesheet href="https://evil.example"?>',
+            '<g aria-labelledby="missing"/>', '<image href="data:image/png;base64,AAAA"/>',
+            '<animate attributeName="opacity"/>', '<path/><svg></svg>',
+        ]
+        for payload in payloads:
+            with self.subTest(payload=payload):
+                def mutate(out):
+                    p = out / 'index.html'
+                    p.write_text(p.read_text().replace('</svg>', payload + '</svg>', 1))
+                self.mutate_export(mutate)
+
+    def test_unexpected_script_file_is_rejected(self):
+        self.mutate_export(lambda out: (out / 'assets/extra.js').write_text('alert(1)'))
+
+
 if __name__ == '__main__':
     unittest.main()

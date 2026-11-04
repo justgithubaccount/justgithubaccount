@@ -76,6 +76,21 @@ def artwork(kind, title):
     return shell(600, 640, title, 'Original orbital line art with luminous blue and violet connections on a deep navy field.', field(kind))
 
 
+def interactive_artwork():
+    """Inline, inert first frame. Profile/image assets retain their exact bytes."""
+    body = field('hero')
+    stars = constellation(600, 640)
+    body = body.replace(stars, '<g id="orbital-field">' + stars, 1)
+    braid = helix(300, 92, 434, 62)
+    body = body.replace(braid, '</g><g id="orbital-static-helix">' + braid + '</g>', 1)
+    svg = shell(600, 640, 'Braided orbital field',
+                'Original blue and violet orbital artwork with two interwoven strands.', body)
+    # Namespace every inline ID to avoid collisions with HTML landmarks.
+    for name in ('title', 'desc', 'strand', 'glow', 'panel'):
+        svg = svg.replace(f'id="{name}"', f'id="orbital-{name}"').replace(f'#{name})', f'#orbital-{name})')
+    return svg.replace('aria-labelledby="title desc"', 'aria-labelledby="orbital-title orbital-desc"')
+
+
 def hero(data):
     name = escape(data['identity']['name'])
     lines = data['identity']['headline'].split('. ')

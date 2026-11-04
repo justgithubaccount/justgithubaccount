@@ -108,6 +108,21 @@ class BuildTests(unittest.TestCase):
                     self.assertEqual((Path(tmp) / name[5:]).read_text(), body)
             self.assertFalse((Path(tmp) / 'data/public-portfolio.json').exists())
 
+    def test_site_has_inert_fallback_and_reviewed_local_enhancement(self):
+        files = self.b.render(self.data)
+        page = files['site/index.html']
+        self.assertIn('id="orbital-static-helix"', page)
+        self.assertIn('id="orbital-field"', page)
+        self.assertIn('aria-labelledby="orbital-title orbital-desc"', page)
+        self.assertIn('<script src="assets/orbital.js" defer></script>', page)
+        self.assertIn('class="orbital-controls" hidden', page)
+        self.assertIn('role="slider"', page)
+        self.assertEqual(files['site/assets/orbital.js'], (ROOT / 'templates/orbital.js').read_text())
+        info = json.loads(files['site/build-info.json'])
+        self.assertIn('assets/orbital.js', info['files'])
+        self.assertNotIn('<script', files['README.md'])
+        self.assertNotIn('orbital-static-helix', files['assets/hero.svg'])
+
     def test_structured_data_has_only_evidenced_projects(self):
         files = self.b.render(self.data)
         data = json.loads(files['site/structured-data.json'])
