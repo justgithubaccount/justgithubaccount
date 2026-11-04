@@ -24,7 +24,7 @@ HTML_ATTRS = {'lang', 'charset', 'name', 'content', 'property', 'rel', 'href', '
 EXPORT_FILES = {'index.html', 'styles.css', 'robots.txt', 'sitemap.xml', 'llms.txt', 'structured-data.json', '.nojekyll', 'assets/favicon.svg', 'assets/orbital.svg', 'assets/orbital.js', 'assets/art-k8s.svg', 'assets/art-infra.svg', 'assets/art-fastapi.svg'}
 
 # Pin reviewed executable bytes independently of the editable export manifest.
-ORBITAL_JS_SHA256 = 'f885e9264e853569298c1118cb932c51e9c8cd68329ae35c7f1b979039c59e02'
+ORBITAL_JS_SHA256 = 'cd71519c6e75cb50d2f8e9bda3c1a0c61fc75feee74f69e54f31ab0457a585c0'
 
 
 def require(ok, message):

@@ -11,11 +11,13 @@
   const controls = root.querySelector('.orbital-controls');
   const left = root.querySelector('#orbital-left');
   const right = root.querySelector('#orbital-right');
+  const play = root.querySelector('#orbital-play');
   const mode = root.querySelector('#orbital-mode');
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let drawing, paths, frame = 0, phase = 0, paintedPhase = -1;
   let x = 0, y = 0, targetX = 0, targetY = 0, drag = null;
   let paused = false, failed = false, enabled = false;
+  let spinning = false, lastTick = null;
 
   function release() {
     const previous = drag;
@@ -26,6 +28,7 @@
 
   function staticArtwork() {
     enabled = false;
+    setPlaying(false);
     cancelAnimationFrame(frame);
     frame = 0;
     release();
@@ -73,30 +76,49 @@
     paintedPhase = phase;
   }
 
-  const tick = guarded(() => {
+  const tick = guarded(timestamp => {
     frame = 0;
-    if (!enabled) return;
+    if (!enabled || document.hidden) return;
+    if (spinning) {
+      // One turn in 20 seconds; cap a stalled frame instead of jumping ahead.
+      if (lastTick !== null) setAngle(phase * 180 / Math.PI + Math.min(timestamp - lastTick, 64) * .018);
+      lastTick = timestamp;
+    }
     if (paintedPhase !== phase) draw();
     x += (targetX - x) * .18;
     y += (targetY - y) * .18;
     const moving = Math.abs(targetX - x) + Math.abs(targetY - y) > .02;
     if (!moving) { x = targetX; y = targetY; }
     field.setAttribute('transform', `translate(${x.toFixed(2)} ${y.toFixed(2)})`);
-    if (moving) frame = requestAnimationFrame(tick);
+    if (moving || spinning) schedule();
   });
-  function schedule() { if (enabled && !frame) frame = requestAnimationFrame(tick); }
-  function turn(degrees) {
+  function schedule() { if (enabled && !document.hidden && !frame) frame = requestAnimationFrame(tick); }
+  function setAngle(degrees) {
     phase = ((degrees % 360 + 360) % 360) * Math.PI / 180;
     const value = Math.round(phase * 180 / Math.PI) % 360;
-    handle.setAttribute('aria-valuenow', String(value));
-    handle.setAttribute('aria-valuetext', `${value} degrees`);
+    if (handle.getAttribute('aria-valuenow') !== String(value)) {
+      handle.setAttribute('aria-valuenow', String(value));
+      handle.setAttribute('aria-valuetext', `${value} degrees`);
+    }
+  }
+  function setPlaying(value) {
+    spinning = value && enabled && !document.hidden;
+    lastTick = null;
+    play.textContent = spinning ? 'Pause' : 'Play';
+    play.setAttribute('aria-label', spinning ? 'Pause helix rotation' : 'Play helix rotation');
+    root.classList.toggle('is-playing', spinning);
+    if (spinning) schedule();
+  }
+  function turn(degrees) {
+    setPlaying(false);
+    setAngle(degrees);
     schedule();
   }
   function updateMode() {
     staticArtwork();
     controls.hidden = motion.matches;
     mode.setAttribute('aria-pressed', String(paused));
-    left.disabled = right.disabled = paused;
+    left.disabled = right.disabled = play.disabled = paused;
     if (paused || motion.matches) return;
     draw();
     drawing.removeAttribute('visibility');
@@ -133,11 +155,11 @@
     listen(handle, 'pointerdown', e => {
       if (!enabled || !e.isPrimary || e.button !== 0 || drag) return;
       handle.focus({preventScroll: true});
-      drag = {id: e.pointerId, x: e.clientX, y: e.clientY, phase, active: e.pointerType !== 'touch'};
-      if (drag.active) {
+      drag = {id: e.pointerId, x: e.clientX, y: e.clientY, phase, wasPlaying: spinning, active: false};
+      setPlaying(false);
+      if (e.pointerType !== 'touch') {
         e.preventDefault();
         handle.setPointerCapture(e.pointerId);
-        root.classList.add('is-dragging');
       }
     });
     listen(handle, 'pointermove', e => {
@@ -153,8 +175,17 @@
       // One artwork width is a turn, independent of viewport/device resolution.
       turn(drag.phase * 180 / Math.PI + dx / art.getBoundingClientRect().width * 360);
     });
-    for (const event of ['pointerup', 'pointercancel', 'lostpointercapture', 'blur']) {
+    listen(handle, 'pointerup', e => {
+      if (!drag || drag.id !== e.pointerId) return;
+      const previous = drag;
+      release();
+      if (enabled && paintedPhase !== phase) draw();
+      if (!previous.active) setPlaying(!previous.wasPlaying);
+    });
+    for (const event of ['pointercancel', 'lostpointercapture', 'blur']) {
       listen(handle, event, () => {
+        if (!drag) return;
+        setPlaying(false);
         release();
         if (enabled && paintedPhase !== phase) draw();
       });
@@ -164,14 +195,23 @@
       const delta = {ArrowLeft: -15, ArrowDown: -15, ArrowRight: 15, ArrowUp: 15};
       if (!(e.key in delta) && e.key !== 'Home' && e.key !== 'End') return;
       e.preventDefault();
+      release();
       turn(e.key === 'Home' ? 0 : e.key === 'End' ? 359 : phase * 180 / Math.PI + delta[e.key]);
     });
     listen(left, 'click', () => { if (enabled) turn(phase * 180 / Math.PI - 15); });
     listen(right, 'click', () => { if (enabled) turn(phase * 180 / Math.PI + 15); });
+    listen(play, 'click', () => { if (enabled) setPlaying(!spinning); });
     listen(mode, 'click', () => { paused = !paused; updateMode(); });
     listen(motion, 'change', updateMode);
+    function stopInteraction() {
+      setPlaying(false);
+      release();
+      if (enabled && paintedPhase !== phase) draw();
+    }
+    listen(root, 'focusout', e => { if (!root.contains(e.relatedTarget)) stopInteraction(); });
+    listen(window, 'blur', stopInteraction);
     listen(document, 'visibilitychange', () => {
-      if (document.hidden) { release(); targetX = targetY = x = y = 0; cancelAnimationFrame(frame); frame = 0; field.removeAttribute('transform'); }
+      if (document.hidden) { stopInteraction(); targetX = targetY = x = y = 0; cancelAnimationFrame(frame); frame = 0; field.removeAttribute('transform'); }
       else schedule();
     });
     updateMode();

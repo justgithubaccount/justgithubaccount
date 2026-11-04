@@ -115,15 +115,27 @@ canvas so its radial glow blends into the page gradient. Standalone Profile and
 website image assets keep their opaque backgrounds. JavaScript
 adds separate front/back strand paths using a variable phase, retains the
 original paths for fallback, and moves only the orbital field by at most six
-horizontal and four vertical SVG units. Frames are requested only during input
-or parallax settling. There is no autoplay, momentum, external resource or API.
+horizontal and four vertical SVG units. Frames are requested only during input,
+parallax settling or explicitly started rotation. There is no motion on load,
+momentum, external resource or API.
 
-Drag the central helix horizontally, focus it and use arrow keys (15° steps), or
-tap the two rotation buttons. Home resets the orientation; End selects 359°.
+Click/tap the central helix or use **Play** to start a restrained phase rotation
+(18° per second, based on frame timestamps); repeat to **Pause** at the exact
+current angle. The compact button also supports Enter/Space. Nothing starts
+automatically. A pointer press freezes the phase; horizontal movement of at least
+8px selects manual dragging instead of toggling Play. Vertical touch gestures
+continue scrolling and never start rotation.
+
+Drag the central helix horizontally, focus it with Tab/click and immediately use
+arrow keys (15° steps), or tap the two rotation buttons once. No Enter activation
+is needed for the slider. Home resets the orientation; End selects 359°.
 The control exposes a name, current angle and instructions to accessibility
-APIs. Vertical touch gestures scroll the page (`pan-y pinch-zoom`); horizontal
-intent is required before dragging. Release/cancel stops the rotation. The
-**Static artwork** toggle restores the original SVG and disables rotation.
+APIs. Arrow handlers are local to that focused control. Manual input stops Play;
+release/cancel leaves manual rotation stopped. Leaving the controls with keyboard
+focus, losing window focus or hiding the tab also stops Play. Returning never
+resumes it without another explicit action. Hidden/idle states schedule no
+continuing frames; long frame delays are capped to avoid a sudden jump.
+The **Static artwork** toggle restores the original SVG and disables all motion.
 Reduced motion, missing input support, unavailable/disabled JavaScript and
 initialization or interaction errors keep the static artwork. The OS motion
 preference is also respected if it changes while the page is open.
@@ -155,11 +167,15 @@ in `QA_DIR` (or a temporary directory). Keep these QA artifacts outside Git and
 outside the exported product.
 
 The suite covers desktop 1440×1024 and 1280×720; touch 390×844 and 320×844;
-hover, bounded parallax, reversible drag, release/leave/cancel, keyboard-only
-focus, tap alternatives, native vertical touch scrolling, static mode, dynamic
+hover, bounded parallax, reversible drag, release/leave/cancel, click-vs-drag,
+opt-in Play/Pause, Enter/Space, immediate arrows after Tab/click focus, tap
+alternatives, native vertical touch scrolling, static mode, dynamic
 reduced motion, no JavaScript, unsupported input and injected failures. It
 checks console/network health, same-origin-only resources, page identity,
 responsive overflow, navigation and disclosures, and idle frame scheduling.
+The clock/visibility case injects rAF timestamps and a visibility event to verify
+equal rotation at 20/60Hz, stall limits and hidden-state cancellation. It tests
+the lifecycle handler deterministically, not the browser's native tab UI.
 Recorded timing is a local observation, not an FPS or field-performance claim.
 Visual inspection and assistive-technology review remain separate from these
 assertions; operator visual acceptance is still required.

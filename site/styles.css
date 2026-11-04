@@ -54,11 +54,14 @@ details[open] summary{color:var(--accent)}
 .hero-visual .visual-caption{margin-top:8px}
 .orbital-controls{text-align:center;margin-top:14px;font-size:12px}
 .orbital-controls p{font-size:12px}
-.orbital-buttons{display:flex;justify-content:center;gap:8px;margin-top:6px}
+.orbital-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:6px}
 .orbital-buttons button{font:inherit;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:6px;padding:8px 12px;min-width:44px;min-height:44px;cursor:pointer}
 .orbital-buttons button:hover,.orbital-buttons button[aria-pressed=true]{border-color:var(--cyan);color:var(--cyan)}
 .orbital-buttons button:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
 .orbital-buttons button:disabled{opacity:.45;cursor:default}
+#orbital-play{min-width:64px}
+.is-playing #orbital-play{border-color:var(--cyan);color:var(--cyan)}
+.is-playing #orbital-moving-helix{filter:drop-shadow(0 0 3px rgba(150,219,245,.45))}
 [hidden]{display:none!important}
 @media(max-width:720px){.orbital-art{max-height:410px;max-width:384.375px;margin-inline:auto}.orbital-controls{margin-top:14px}}
 @media(prefers-reduced-motion:reduce){.helix-control,.orbital-controls,#orbital-moving-helix{display:none!important}#orbital-static-helix{visibility:visible}}

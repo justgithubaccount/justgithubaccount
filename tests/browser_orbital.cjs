@@ -56,6 +56,16 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       } finally { await context.close(); }
     }
     const geometry = p => p.locator('#orbital-moving-helix').innerHTML();
+    const pausedSpin = async p => {
+      assert.equal(await p.locator('#orbital-play').innerText(), 'Play');
+      assert.equal(await p.locator('#orbital-play').getAttribute('aria-label'), 'Play helix rotation');
+      const stopped = await geometry(p);
+      await sleep(700); // allow any independent parallax easing to settle
+      assert.equal(await geometry(p), stopped, 'paused angle is exact');
+      const frames = await p.evaluate(() => window.qaFrames);
+      await sleep(150);
+      assert.equal(await p.evaluate(() => window.qaFrames), frames, 'paused mode schedules no idle frames');
+    };
     const staticVisible = async p => {
       assert.equal(await p.locator('.helix-control').isVisible(), false);
       assert.notEqual(await p.locator('#orbital-static-helix').getAttribute('visibility'), 'hidden');
@@ -129,6 +139,117 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
         await p.goto(url);
       });
     }
+    for (const width of [1440,1280,390,320]) {
+      const mobile = width < 720;
+      await run(`spin-${width}`, {viewport:{width,height:mobile?844:1024},isMobile:mobile,hasTouch:mobile,
+        ...(width===1440?{recordVideo:{dir:path.join(output,'spin-video'),size:{width:1440,height:1024}}}:{})}, async p => {
+        const slider=p.getByRole('slider'), play=p.locator('#orbital-play');
+        const activate = async locator => mobile ? locator.tap() : locator.click();
+        await pausedSpin(p); // no autoplay at load
+        await slider.scrollIntoViewIfNeeded();
+        const initial=await geometry(p);
+        await activate(slider);
+        assert.equal(await slider.evaluate(e=>e===document.activeElement),true,'pointer focuses helix');
+        assert.equal(await play.innerText(),'Pause');
+        assert.equal(await play.getAttribute('aria-label'),'Pause helix rotation');
+        await sleep(350);
+        assert.notEqual(await geometry(p),initial,'user opt-in rotates strand geometry');
+        await p.screenshot({path:path.join(output,`playing-${width}.png`)});
+        await activate(slider); await pausedSpin(p);
+        await activate(play); await sleep(100);
+        assert.equal(await play.innerText(),'Pause','one button click starts');
+        await activate(play); await pausedSpin(p);
+        // Manual steps work with one activation, and stop a running rotation.
+        await activate(slider);
+        await p.keyboard.press('Home'); await sleep(50);
+        await pausedSpin(p);
+        assert.equal(await slider.getAttribute('aria-valuenow'),'0');
+        await p.keyboard.press('ArrowRight'); await sleep(50);
+        assert.equal(await slider.getAttribute('aria-valuenow'),'15','no Enter after pointer focus');
+        await activate(play); await sleep(100);
+        const angle=Number(await slider.getAttribute('aria-valuenow'));
+        await activate(p.getByRole('button',{name:'Rotate helix right'})); await sleep(50);
+        assert(Math.abs(Number(await slider.getAttribute('aria-valuenow'))-angle-15)<5);
+        await pausedSpin(p);
+        // Native button keyboard activation, visible focus, and no global arrows.
+        await play.focus();
+        await p.keyboard.press('Enter'); assert.equal(await play.innerText(),'Pause');
+        await p.keyboard.press('Space'); await pausedSpin(p);
+        assert.equal(await play.evaluate(e=>getComputedStyle(e).outlineStyle),'solid');
+        const fixed=await geometry(p);
+        await p.keyboard.press('ArrowRight'); await sleep(50);
+        assert.equal(await geometry(p),fixed,'arrows only affect focused slider');
+        await p.keyboard.press('Space'); assert.equal(await play.innerText(),'Pause');
+        await p.keyboard.press('Enter'); await pausedSpin(p);
+        await activate(play);
+        await p.getByRole('link',{name:/Explore the work/}).focus();
+        await pausedSpin(p); // leaving controls never leaves rotation running
+        await activate(play);
+        await p.getByRole('button',{name:'Static artwork'}).click(); await staticVisible(p);
+        assert.equal(await play.isDisabled(),true);
+        const frames=await p.evaluate(()=>window.qaFrames); await sleep(150);
+        assert.equal(await p.evaluate(()=>window.qaFrames),frames);
+        await p.getByRole('button',{name:'Static artwork'}).click();
+        await pausedSpin(p); // returning from static mode never resumes
+        await p.locator('#orbital').scrollIntoViewIfNeeded();
+        await p.screenshot({path:path.join(output,`controls-${width}.png`)});
+      });
+    }
+    await run('spin-drag-threshold', {viewport:{width:1440,height:1024}}, async p => {
+      const slider=p.getByRole('slider'), play=p.locator('#orbital-play');
+      const b=await slider.boundingBox(), x=b.x+b.width/2,y=b.y+b.height/2;
+      await p.mouse.move(x,y); await p.mouse.down(); await p.mouse.move(x+3,y+2); await p.mouse.up();
+      assert.equal(await play.innerText(),'Pause','small pointer jitter is a click');
+      await sleep(100);
+      await p.mouse.move(x,y); await p.mouse.down();
+      const start=await geometry(p);
+      await sleep(120); assert.equal(await geometry(p),start,'pointerdown freezes current angle');
+      await p.mouse.move(x+40,y,{steps:5}); await sleep(50);
+      assert.notEqual(await geometry(p),start,'drag remains manual');
+      await p.mouse.move(x,y,{steps:5}); await p.mouse.up();
+      await pausedSpin(p);
+      assert.equal(await geometry(p),start,'drag reversal preserves exact starting angle');
+      await slider.click(); await p.mouse.down();
+      await slider.dispatchEvent('pointercancel'); await p.mouse.up();
+      await pausedSpin(p); // release/cancel must not count as another Play
+      await slider.click(); await p.mouse.down();
+      await slider.dispatchEvent('lostpointercapture'); await p.mouse.up();
+      await pausedSpin(p);
+      await slider.click(); await p.mouse.down(); await p.mouse.move(x,y+25); await p.mouse.up();
+      await pausedSpin(p); // vertical movement is not a Play shortcut
+    });
+    await run('spin-clock-and-visibility', {viewport:{width:1440,height:1024}}, async p => {
+      // Controlled rAF timestamps exercise rate independence and hidden-state
+      // scheduling deterministically; this case injects the visibility event.
+      const play=p.locator('#orbital-play'), slider=p.getByRole('slider');
+      await play.click();
+      await p.evaluate(()=>{qaAdvance(0);for(let i=0;i<60;i++)qaAdvance(1000/60);});
+      assert.equal(await slider.getAttribute('aria-valuenow'),'18','18 degrees in one second at 60Hz');
+      await slider.focus(); await p.keyboard.press('Home');
+      await play.click();
+      await p.evaluate(()=>{qaAdvance(0);for(let i=0;i<20;i++)qaAdvance(50);});
+      assert.equal(await slider.getAttribute('aria-valuenow'),'18','same speed at 20Hz');
+      await p.evaluate(()=>qaAdvance(10000));
+      assert(Number(await slider.getAttribute('aria-valuenow'))<21,'stall cannot jump a turn');
+      const frozen=await geometry(p);
+      await p.evaluate(()=>qaVisibility(true));
+      assert.equal(await play.innerText(),'Play');
+      assert.equal(await p.evaluate(()=>qaPending()),0,'hidden state cancels frames');
+      await play.evaluate(e=>e.click());
+      assert.equal(await play.innerText(),'Play','hidden document cannot start');
+      await p.evaluate(()=>{qaAdvance(10000);qaVisibility(false);qaAdvance(0);});
+      assert.equal(await geometry(p),frozen,'restore preserves angle without elapsed-time jump');
+      assert.equal(await p.evaluate(()=>qaPending()),0,'restore stays idle');
+    }, () => {
+      let id=0,time=0,hidden=false;
+      const frames=new Map();
+      window.requestAnimationFrame=cb=>{frames.set(++id,cb);return id;};
+      window.cancelAnimationFrame=id=>frames.delete(id);
+      window.qaAdvance=ms=>{time+=ms;const pending=[...frames.values()];frames.clear();for(const cb of pending)cb(time);};
+      window.qaPending=()=>frames.size;
+      Object.defineProperty(document,'hidden',{get:()=>hidden});
+      window.qaVisibility=value=>{hidden=value;document.dispatchEvent(new Event('visibilitychange'));};
+    });
     for (const width of [390,320]) {
       await run(`touch-${width}`, {viewport:{width,height:844},isMobile:true,hasTouch:true}, async (p,ctx) => {
         const slider = p.getByRole('slider');
@@ -146,14 +267,18 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
         await touch('touchEnd'); await sleep(60);
         assert(Number(await slider.getAttribute('aria-valuenow'))>0,'touch drag rotates');
         const fixed=await geometry(p); await sleep(100); assert.equal(await geometry(p),fixed);
+        await slider.tap(); assert.equal(await p.locator('#orbital-play').innerText(),'Pause');
+        await sleep(80);
         await slider.scrollIntoViewIfNeeded();
         const s=await slider.boundingBox(), sx=s.x+s.width/2, sy=s.y+s.height*.75;
         const scroll=await p.evaluate(()=>scrollY);
         await touch('touchStart',sx,sy);
+        const beforeScroll=await geometry(p);
         for(let i=1;i<=8;i++){await touch('touchMove',sx,sy-i*15);await sleep(20);}
         await touch('touchEnd'); await sleep(350);
         assert(await p.evaluate(()=>scrollY)>scroll+30,'vertical gesture scrolls the page');
-        assert.equal(await geometry(p),fixed,'scroll does not twist');
+        assert.equal(await geometry(p),beforeScroll,'scroll pauses automatic rotation without twisting');
+        await pausedSpin(p);
         await cdp.detach();
         await p.locator('#orbital').scrollIntoViewIfNeeded();
         await p.screenshot({path:path.join(output, `mobile-art-${width}.png`)});
@@ -165,9 +290,14 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       await staticVisible(p); assert.equal(await p.locator('.orbital-controls').isVisible(),false);
       await p.emulateMedia({reducedMotion:'no-preference'}); await p.getByRole('slider').waitFor({state:'visible'});
       await p.getByRole('slider').press('ArrowRight'); await sleep(50);
+      await p.locator('#orbital-play').click();
       await p.emulateMedia({reducedMotion:'reduce'});
       await p.waitForFunction(()=>document.querySelector('#orbital-static-helix').getAttribute('visibility') !== 'hidden');
       await staticVisible(p);
+      const frames=await p.evaluate(()=>window.qaFrames); await sleep(150);
+      assert.equal(await p.evaluate(()=>window.qaFrames),frames);
+      await p.emulateMedia({reducedMotion:'no-preference'});
+      await p.getByRole('slider').waitFor({state:'visible'}); await pausedSpin(p);
     });
     await run('unsupported-input', {viewport:{width:1440,height:1024}}, staticVisible, () => { window.PointerEvent=undefined; });
     await run('initialization-error', {viewport:{width:1440,height:1024}}, async p => {
