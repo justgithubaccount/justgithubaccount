@@ -16,7 +16,7 @@
       "author": {
         "@id": "https://justgithubaccount.github.io/#author"
       },
-      "description": "From a working application to a repeatable delivery path. Explore my public engineering lab across Python APIs, cloud infrastructure and GitOps.",
+      "description": "From a working application to a repeatable delivery path. Explore my public engineering lab across interfaces, networks and services.",
       "hasPart": [
         {
           "@type": "SoftwareSourceCode",

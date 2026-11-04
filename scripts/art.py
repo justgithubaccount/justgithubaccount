@@ -80,25 +80,25 @@ def hero(data):
     name = escape(data['identity']['name'])
     lines = data['identity']['headline'].split('. ')
     headline = ''.join(f'<text x="48" y="{169+n*74}"' + (' fill="#c4b6ff"' if n == 2 else '') + f'>{escape(line.rstrip(".") + ".")}</text>' for n, line in enumerate(lines))
-    return shell(1280, 480, data['identity']['headline'], 'Jenya: Python applications, cloud infrastructure and GitOps. Original braided orbital illustration.', f'''
+    return shell(1280, 480, data['identity']['headline'], 'Jenya: interfaces, networks and services. Original braided orbital illustration.', f'''
 <rect width="1280" height="480" rx="16" fill="{BG}"/>
 <g transform="translate(790 -37) scale(.87)">{field('hero')}</g>
 <path d="M48 59 h34" stroke="#92b5ff" stroke-width="2"/>
 <text x="96" y="66" font-family="Arial, sans-serif" font-size="22" fill="{MUTED}">{name} / justgithubaccount</text>
 <g font-family="Arial, sans-serif" font-size="66" font-weight="600" fill="{WHITE}">
 {headline}</g>
-<text x="48" y="405" font-family="Arial, sans-serif" font-size="22" fill="{MUTED}">Python APIs · Cloud infrastructure · GitOps</text>''')
+<text x="48" y="405" font-family="Arial, sans-serif" font-size="22" fill="{MUTED}">Interfaces · Networks · Services</text>''')
 
 
 def compact_hero(data):
     lines = data['identity']['headline'].split('. ')
     headline = ''.join(f'<text x="32" y="{130+n*64}"' + (' fill="#c4b6ff"' if n == 2 else '') + f'>{escape(line.rstrip(".") + ".")}</text>' for n, line in enumerate(lines))
-    return shell(640, 560, data['identity']['headline'], 'Python APIs, cloud infrastructure and GitOps, with a new braided orbital illustration.', f'''
+    return shell(640, 560, data['identity']['headline'], 'Interfaces, networks and services, with an original braided orbital illustration.', f'''
 <rect width="640" height="560" rx="14" fill="{BG}"/>
 <text x="32" y="54" font-family="Arial, sans-serif" font-size="21" fill="{MUTED}">{escape(data['identity']['name'])} / justgithubaccount</text>
 <g transform="translate(345 262) scale(.45)">{field('hero')}</g>
 <g font-family="Arial, sans-serif" font-size="54" font-weight="600" fill="{WHITE}">{headline}</g>
-<g font-family="Arial, sans-serif" font-size="23" fill="{MUTED}"><text x="32" y="376">Python APIs</text><text x="32" y="414">Cloud infrastructure</text><text x="32" y="452">GitOps</text></g>''')
+<g font-family="Arial, sans-serif" font-size="23" fill="{MUTED}"><text x="32" y="376">Interfaces</text><text x="32" y="414">Networks</text><text x="32" y="452">Services</text></g>''')
 
 
 def compact_card(project, index):

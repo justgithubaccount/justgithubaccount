@@ -2,12 +2,12 @@
 
 <picture>
   <source media="(max-width: 600px)" srcset="assets/hero-compact.svg"/>
-  <img src="assets/hero.svg" alt="Software. Infrastructure. Connected. Jenya: Python APIs, cloud infrastructure and GitOps."/>
+  <img src="assets/hero.svg" alt="Software. Infrastructure. Connected. Jenya: interfaces, networks and services."/>
 </picture>
 
 # Hi, I’m Jenya.
 
-From a working application to a repeatable delivery path. Explore my public engineering lab across Python APIs, cloud infrastructure and GitOps.
+From a working application to a repeatable delivery path. Explore my public engineering lab across interfaces, networks and services.
 
 [Explore the portfolio](https://justgithubaccount.github.io/) · [Browse my GitHub](https://github.com/justgithubaccount)
 

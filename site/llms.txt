@@ -1,6 +1,6 @@
 # Jenya / justgithubaccount
 
-> From a working application to a repeatable delivery path. Explore my public engineering lab across Python APIs, cloud infrastructure and GitOps.
+> From a working application to a repeatable delivery path. Explore my public engineering lab across interfaces, networks and services.
 
 Public code projects in an engineering lab. Repository snapshots describe code, not a live hosted service.
 
