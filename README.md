@@ -2,12 +2,12 @@
 
 <picture>
   <source media="(max-width: 600px)" srcset="assets/hero-compact.svg"/>
-  <img src="assets/hero.svg" alt="Software. Infrastructure. Connected. Jenya: Python APIs, cloud infrastructure and GitOps."/>
+  <img src="assets/hero.svg" alt="Software. Infrastructure. Connected. Jenya: interfaces, networks and services."/>
 </picture>
 
 # Hi, I’m Jenya.
 
-From a working application to a repeatable delivery path. Explore my public engineering lab across Python APIs, cloud infrastructure and GitOps.
+From a working application to a repeatable delivery path. Explore my public engineering lab across interfaces, networks and services.
 
 [Explore the portfolio](https://justgithubaccount.github.io/) · [Browse my GitHub](https://github.com/justgithubaccount)
 
@@ -44,11 +44,11 @@ Provisioning code and workflows; no currently running environment or billing gua
 <a href="https://github.com/justgithubaccount/app-poly-gitops-fastapi">
   <picture>
     <source media="(max-width: 600px)" srcset="assets/project-fastapi-compact.svg"/>
-    <img src="assets/project-fastapi.svg" alt="Python application: AI chat, with a backend. Python, FastAPI, OpenTelemetry."/>
+    <img src="assets/project-fastapi.svg" alt="Applications &amp; services: AI chat, from UI to API. Python, FastAPI, OpenTelemetry."/>
   </picture>
 </a>
 
-A FastAPI service with project-scoped conversations, stored transcripts and OpenTelemetry instrumentation. Provider failures are handled separately from successful chat history.
+The app-poly-gitops lab includes a standalone browser UI for projects and chat alongside this FastAPI service for project conversations, stored transcripts and telemetry. GitOps delivery is defined in the related infrastructure repositories.
 
 Application code in an engineering lab; no hosted commercial service or customer results are claimed.
 
