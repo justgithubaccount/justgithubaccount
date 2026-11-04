@@ -122,6 +122,7 @@ def website(d):
     values = {'title': h(i['headline'] + ' — ' + i['name']), 'description': h(i['intro']), 'name': h(i['name']),
               'hero_lines': '<br/>'.join(h(line.rstrip('.') + '.') if n < 2 else '<span>' + h(line.rstrip('.') + '.') + '</span>' for n, line in enumerate(i['headline'].split('. '))),
               'intro': h(i['intro']), 'projects': '\n'.join(project_html), 'focus': focus,
+              'orbital_svg': art.interactive_artwork(),
               'focus_title': h(i['focus_title']), 'focus_intro': h(i['focus_intro']),
               'robots': 'index, follow' if d['publication_state'] == 'RELEASE_APPROVED' else 'noindex, nofollow',
               'json_ld': json.dumps(structured(d), ensure_ascii=False, separators=(',', ':')).replace('<', '\\u003c')}
@@ -141,6 +142,7 @@ def render(data):
         files[f'assets/project-{p["id"]}-compact.svg'] = art.compact_card(p, n)
     files['site/index.html'] = website(d)
     files['site/styles.css'] = (ROOT / 'templates/styles.css').read_text(encoding='utf-8')
+    files['site/assets/orbital.js'] = (ROOT / 'templates/orbital.js').read_text(encoding='utf-8')
     files['site/assets/orbital.svg'] = art.artwork('hero', 'Braided orbital field')
     for p in d['projects']:
         files[f'site/assets/art-{p["id"]}.svg'] = art.artwork(p['id'], p['category'])
@@ -157,7 +159,7 @@ def render(data):
     info = {
         'schema_version': 'portfolio-export.v1', 'publication_state': d['publication_state'],
         'manifest_sha256': hashlib.sha256(json_text(d).encode()).hexdigest(),
-        'generator_sha256': hashlib.sha256(b''.join((ROOT / p).read_bytes() for p in ['scripts/build.py', 'scripts/art.py', 'templates/index.html', 'templates/styles.css'])).hexdigest(),
+        'generator_sha256': hashlib.sha256(b''.join((ROOT / p).read_bytes() for p in ['scripts/build.py', 'scripts/art.py', 'templates/index.html', 'templates/styles.css', 'templates/orbital.js'])).hexdigest(),
         'files': {name[5:]: hashlib.sha256(body.encode()).hexdigest() for name, body in files.items() if name.startswith('site/')},
     }
     files['site/build-info.json'] = json_text(info)
