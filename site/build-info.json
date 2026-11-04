@@ -11,9 +11,9 @@
     "robots.txt": "711cd7aa9b659472622e4265097c05219e57ca272722279d89ff125e082c4793",
     "sitemap.xml": "8f67941ae7102c473ad10200078f56b0fcbebd3b6dec0611ad2050c4a898b1c6",
     "structured-data.json": "90bf95ef09658bdb4a6b0096c99e30e34fb0d072e61135fa48c4f26c8c01b4d1",
-    "styles.css": "08cc58509e9e933ab4feb5aebda6c1d9077e4ae6d596736644b023103c33c57b"
+    "styles.css": "fd95105b64dd63246d0f7c5c7acb0b6dfe48917ce6ed8094657f120ada8d4723"
   },
-  "generator_sha256": "e8fe63a4b7f03531ff5fcea9e22b3a9df85a3f3390eed22a0bd9bf2a59d278b8",
+  "generator_sha256": "b19868135e1e2ae400b14c78bed05241466a6d620d7444a4a6fa12a695cd3fe1",
   "manifest_sha256": "b80cee316ed016711ddd3b24756cbaadc1551d4c365575edd30a353b6e6a67a3",
   "publication_state": "RELEASE_APPROVED",
   "schema_version": "portfolio-export.v1"
