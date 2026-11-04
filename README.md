@@ -44,7 +44,7 @@ Provisioning code and workflows; no currently running environment or billing gua
 <a href="https://github.com/justgithubaccount/app-poly-gitops-fastapi">
   <picture>
     <source media="(max-width: 600px)" srcset="assets/project-fastapi-compact.svg"/>
-    <img src="assets/project-fastapi.svg" alt="Python application: AI chat, with a backend. Python, FastAPI, OpenTelemetry."/>
+    <img src="assets/project-fastapi.svg" alt="Applications &amp; services: AI chat, with a backend. Python, FastAPI, OpenTelemetry."/>
   </picture>
 </a>
 
