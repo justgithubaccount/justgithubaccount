@@ -65,6 +65,22 @@ class AuditTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     audit.audit_site(out)
 
+    def test_animated_profile_stylesheet_is_pinned_and_sanitized(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp) / 'assets'
+            directory.mkdir()
+            target = directory / 'hero-animated.svg'
+            original = build.render(self.data)['assets/hero-animated.svg']
+            target.write_text(original)
+            audit.audit_svg(target)
+            for payload in ('@import "https://example.invalid/a.css";', 'script{}'):
+                target.write_text(original.replace('<style>', '<style>' + payload, 1))
+                with self.assertRaises(ValueError):
+                    audit.audit_svg(target)
+            target.write_text(original.replace('</svg>', '<script/></svg>'))
+            with self.assertRaises(ValueError):
+                audit.audit_svg(target)
+
     def test_svg_rejects_raster_script_and_remote_resources(self):
         base = build.render(self.data)['assets/hero.svg']
         for extra in ['<image href="data:image/png;base64,AAAA"/>', '<script/>', '<foreignObject/>', '<path onclick="x()"/>', '<path fill="url(https://evil.example)"/>']:

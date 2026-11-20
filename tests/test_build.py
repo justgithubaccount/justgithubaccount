@@ -68,6 +68,19 @@ class BuildTests(unittest.TestCase):
             self.assertIsNotNone(root.find('{http://www.w3.org/2000/svg}desc'))
             self.assertFalse(any(x in svg for x in ('<image', 'foreignObject', '<script', 'base64', 'href=', '@font-face')))
 
+    def test_animated_profile_hero_tracks_approved_projects(self):
+        files = self.b.render(self.data)
+        self.assertIn('src="assets/hero-animated.svg"', files['README.md'])
+        self.assertIn('media="(prefers-reduced-motion: reduce)" srcset="assets/hero.svg"', files['README.md'])
+        self.assertIn('media="(max-width: 600px)" srcset="assets/hero-compact.svg"', files['README.md'])
+        animated = files['assets/hero-animated.svg']
+        self.assertEqual(animated.count('<style>'), 1)
+        self.assertEqual(animated.count('id="public-node-'), 3)
+        self.assertIn('prefers-reduced-motion:reduce', animated)
+        for project in self.data['projects']:
+            self.assertIn(project['category'].split(' ', 1)[0].upper(), animated)
+        self.assertEqual(files['assets/hero.svg'], self.b.art.hero(self.data))
+
     def test_draft_does_not_claim_a_live_website(self):
         d = copy.deepcopy(self.data)
         d['publication_state'] = 'DRAFT'

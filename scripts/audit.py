@@ -152,7 +152,23 @@ class Page(HTMLParser):
 
 def audit_svg(path):
     text = path.read_text(encoding='utf-8')
-    audit_svg_text(text)
+    if path.name == 'hero-animated.svg' and path.parent.name == 'assets':
+        # Profile-only CSS exception. Remaining SVG uses the existing static parser.
+        from art import HERO_ORBIT_CSS
+        require(text.count('<style>') == 1 and text.count('</style>') == 1,
+                'Unexpected animated profile stylesheet')
+        match = re.search(r'<style>(.*?)</style>', text, re.S)
+        require(match is not None and match.group(1) == HERO_ORBIT_CSS,
+                'Unreviewed animated profile CSS')
+        require(not re.search(r'@import|@font-face|url\s*\(|https?:|data:|\\',
+                              match.group(1), re.I), 'External or escaped CSS resource')
+        root = audit_svg_text(text.replace(match.group(0), '', 1))
+        ids = {node.attrib.get('id') for node in root.iter()}
+        require({f'public-node-{i}' for i in range(1, 4)} <= ids,
+                'Missing reviewed public project nodes')
+        no_disclosure(text)
+    else:
+        audit_svg_text(text)
     return True
 
 
