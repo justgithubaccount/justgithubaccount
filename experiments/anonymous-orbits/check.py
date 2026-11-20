@@ -110,7 +110,7 @@ def main() -> None:
             "HTML: disallowed active or remote resource")
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     require("<picture>" in readme and 'srcset="./orbit-mobile.svg"' in readme
-            and 'src="./orbit-mobile-static.svg"' in readme
+            and 'srcset="./orbit-mobile-static.svg"' in readme
             and 'srcset="./orbit-static.svg"' in readme
             and 'src="./orbit.svg"' in readme, "README: responsive/still GitHub embed missing")
     print("PASS: 4 SVG XML variants, 6 nodes each, core separation, static fallbacks, offline HTML/README picture")
