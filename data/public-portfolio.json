@@ -63,8 +63,18 @@
       "evidence": [
         "README.md",
         "app/api.py",
-        "app/core/llm_client.py"
+        "app/core/llm_client.py",
+        "tests/test_api.py",
+        "tests/test_observability.py"
       ],
+      "evidence_explanations": {
+        "README.md": "Endpoint map, local startup steps, database options and verification commands.",
+        "app/api.py": "Project and history routes, save-on-success behavior, trace IDs and provider error handling.",
+        "app/core/llm_client.py": "OpenRouter requests, response checks, latency and token instrumentation.",
+        "tests/test_api.py": "Mocked API tests for chat, project history, HTTP 502 errors and no history on failed replies.",
+        "tests/test_observability.py": "Tests confirming disabled telemetry avoids OTLP exporters and middleware."
+      },
+      "evidence_summary": "Trace a project chat from the API route through provider handling to a stored transcript, with trace IDs when available.",
       "focus": "Traceable AI applications",
       "focus_detail": "Connect API behavior, conversation persistence and telemetry in one inspectable backend.",
       "id": "fastapi",
@@ -78,6 +88,7 @@
         "OpenTelemetry"
       ],
       "title": "AI chat, from UI to API.",
+      "verification_note": "Use the README commands for local checks. The browser UI and GitOps delivery live in separate repositories; linked tests are not evidence of a deployed service.",
       "visibility": "PUBLIC"
     }
   ],

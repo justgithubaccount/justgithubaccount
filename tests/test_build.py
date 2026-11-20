@@ -48,6 +48,8 @@ class BuildTests(unittest.TestCase):
             lambda d: d.update(publication_state='PUBLIC'),
             lambda d: d['projects'][0].update(title='x' * 2000),
             lambda d: d['projects'][0].update(evidence=['README.md?redirect=evil']),
+            lambda d: d['projects'][2]['evidence_explanations'].update({'README.md': '<script>'}),
+            lambda d: d['projects'][2]['evidence_explanations'].pop('README.md'),
         ]
         for mutate in mutations:
             with self.subTest(mutation=mutate), tempfile.TemporaryDirectory() as out:
@@ -56,6 +58,16 @@ class BuildTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.b.build(d, Path(out))
                 self.assertEqual(list(Path(out).iterdir()), [])
+
+    def test_fastapi_evidence_explains_exact_pinned_files(self):
+        project = self.data['projects'][2]
+        page = self.b.render(self.data)['site/index.html']
+        self.assertIn(project['evidence_summary'], page)
+        self.assertIn('How to verify: ' + project['verification_note'], page)
+        self.assertEqual(set(project['evidence_explanations']), set(project['evidence']))
+        for path, note in project['evidence_explanations'].items():
+            self.assertIn(self.b.evidence_url(project, path), page)
+            self.assertIn(note, page)
 
     def test_vector_assets_are_safe_and_described(self):
         files = self.b.render(self.data)

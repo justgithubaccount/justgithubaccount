@@ -16,7 +16,7 @@ REPOS = {'app-poly-gitops-k8s', 'app-poly-gitops-infra', 'app-poly-gitops-fastap
 EVIDENCE = {
     'app-poly-gitops-k8s': {'README.md', 'clusters/dev/kustomization.yaml', 'clusters/smoke/kustomization.yaml'},
     'app-poly-gitops-infra': {'README.md', 'terraform/timeweb/main.tf', '.github/workflows/timeweb-smoke.yaml'},
-    'app-poly-gitops-fastapi': {'README.md', 'app/api.py', 'app/core/llm_client.py'},
+    'app-poly-gitops-fastapi': {'README.md', 'app/api.py', 'app/core/llm_client.py', 'tests/test_api.py', 'tests/test_observability.py'},
 }
 VOID = {'meta', 'link', 'img', 'br', 'hr', 'input', 'source', 'wbr', 'area', 'base', 'col', 'embed', 'param', 'track'}
 HTML_TAGS = {'html', 'head', 'meta', 'title', 'link', 'script', 'body', 'a', 'header', 'span', 'nav', 'main', 'section', 'div', 'h1', 'h2', 'h3', 'p', 'ul', 'li', 'ol', 'article', 'img', 'details', 'summary', 'code', 'br', 'footer', 'button'}
