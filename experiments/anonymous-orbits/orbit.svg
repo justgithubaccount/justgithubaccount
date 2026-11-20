@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-labelledby="title desc">
+<title id="title">Anonymous orbital system: six animated nodes around a neutral center</title>
+<desc id="desc">An original decorative demo. Six neutral nodes labelled 01 through 06 circulate at independent speeds around a central SYSTEM label. With reduced motion enabled, all nodes remain still.</desc>
+<style>
+:root{color-scheme:dark}
+svg{display:block;width:100%;height:auto;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.background{fill:url(#space)}
+.haze{fill:url(#haze)}
+.orbit{fill:none;stroke:#7690c7;stroke-width:1.5;stroke-dasharray:3 8}
+.star{fill:#c9dcff}
+.soft{animation:glow 5.8s ease-in-out infinite}
+.stars-a{animation:twinkle 4s ease-in-out infinite}
+.stars-b{animation:twinkle 6s ease-in-out -2.4s infinite}
+.satellite{offset-rotate:0deg;animation:travel var(--speed) linear var(--delay) infinite;offset-distance:0%;offset-path:var(--track)}
+.tile{fill:#152540;stroke:#7a97c3;stroke-width:1.3}
+.satellite text{font-size:12px;fill:#dbe8fd;font-weight:600;letter-spacing:1.1px}
+.center-title{font-weight:800;letter-spacing:7px;fill:#f1f7ff;font-size:39px}
+.center-sub{font-weight:500;letter-spacing:4px;fill:#8faacc;font-size:12px}
+.hint{font-size:13px;fill:#a5bbdc;letter-spacing:2px}
+@keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
+@keyframes twinkle{0%,100%{opacity:.9}50%{opacity:.2}}
+@keyframes glow{0%,100%{opacity:.62}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){
+.satellite,.soft,.stars-a,.stars-b{animation:none!important}
+.satellite{offset-path:none!important}
+.s1{transform:translate(865px,300px)}.s2{transform:translate(535px,190px)}.s3{transform:translate(735px,300px)}
+.s4{transform:translate(335px,300px)}.s5{transform:translate(675px,416px)}.s6{transform:translate(465px,300px)}
+}</style>
+<defs>
+<linearGradient id="space" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071122"/><stop offset=".55" stop-color="#0a1d36"/><stop offset="1" stop-color="#18183b"/></linearGradient>
+<radialGradient id="haze"><stop stop-color="#2c4f91" stop-opacity=".39"/><stop offset="1" stop-color="#081325" stop-opacity="0"/></radialGradient>
+<radialGradient id="core"><stop stop-color="#4462a7" stop-opacity=".45"/><stop offset="1" stop-color="#101f3b" stop-opacity="0"/></radialGradient>
+</defs>
+<rect class="background" width="1200" height="600" rx="26"/>
+<ellipse class="haze" cx="660" cy="305" rx="520" ry="300"/>
+<g><circle class="star stars-a" cx="96" cy="55" r="1.7" opacity="0.75"/>
+<circle class="star stars-b" cx="223" cy="102" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="350" cy="243" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="477" cy="478" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="604" cy="259" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="731" cy="134" r="0.85" opacity="0.75"/>
+<circle class="star stars-a" cx="858" cy="103" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="985" cy="166" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="1112" cy="323" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="69" cy="26" r="1.7" opacity="0.3"/>
+<circle class="star stars-b" cx="196" cy="371" r="0.85" opacity="0.75"/>
+<circle class="star stars-b" cx="323" cy="262" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="450" cy="247" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="577" cy="326" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="704" cy="499" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="831" cy="218" r="0.85" opacity="0.75"/>
+<circle class="star stars-b" cx="958" cy="31" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="1085" cy="486" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="42" cy="487" r="1.7" opacity="0.3"/>
+<circle class="star stars-b" cx="169" cy="34" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="296" cy="223" r="0.85" opacity="0.75"/>
+<circle class="star stars-a" cx="423" cy="506" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="550" cy="335" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="677" cy="258" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="804" cy="275" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="931" cy="386" r="0.85" opacity="0.75"/>
+<circle class="star stars-b" cx="1058" cy="43" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="15" cy="342" r="1.7" opacity="0.3"/>
+<circle class="star stars-b" cx="142" cy="187" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="269" cy="126" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="396" cy="159" r="0.85" opacity="0.75"/>
+<circle class="star stars-b" cx="523" cy="286" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="650" cy="507" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="777" cy="274" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="904" cy="135" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="1031" cy="90" r="0.85" opacity="0.75"/>
+<circle class="star stars-a" cx="1158" cy="139" r="1.7" opacity="0.3"/>
+<circle class="star stars-b" cx="115" cy="282" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="242" cy="519" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="369" cy="302" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="496" cy="179" r="0.85" opacity="0.75"/>
+<circle class="star stars-b" cx="623" cy="150" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="750" cy="215" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="877" cy="374" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="1004" cy="79" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="1131" cy="426" r="1.7" opacity="0.75"/>
+<circle class="star stars-b" cx="88" cy="319" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="215" cy="306" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="342" cy="387" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="469" cy="562" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="596" cy="283" r="0.85" opacity="0.75"/>
+<circle class="star stars-a" cx="723" cy="98" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="850" cy="555" r="0.85" opacity="0.3"/>
+<circle class="star stars-b" cx="977" cy="558" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="1104" cy="107" r="1.7" opacity="0.3"/>
+<circle class="star stars-b" cx="61" cy="298" r="0.85" opacity="0.75"/>
+<circle class="star stars-b" cx="188" cy="35" r="0.85" opacity="0.3"/>
+<circle class="star stars-a" cx="315" cy="414" r="0.85" opacity="0.3"/></g>
+<circle cx="600" cy="300" r="150" fill="url(#core)" class="soft"/>
+<path class="orbit" d="M 865 300 A 265 104 0 1 1 335 300 A 265 104 0 1 1 865 300" opacity=".55"/>
+<path class="orbit" d="M 800 300 C 790 150 500 150 400 300 C 410 450 700 450 800 300" opacity=".45"/>
+<path class="orbit" d="M 735 300 C 690 238 510 238 465 300 C 510 362 690 362 735 300" opacity=".6"/>
+<circle cx="600" cy="300" r="74" fill="#0a1a2f" stroke="#6986b5" stroke-width="1.5"/>
+<circle cx="600" cy="300" r="85" fill="none" stroke="#4e719f" stroke-width="1" opacity=".4"/>
+<g text-anchor="middle"><text x="600" y="301" class="center-title">CORE</text><text x="600" y="325" class="center-sub">DEMO</text></g>
+<g class="satellite s1" style="--track:path('M 865 300 A 265 104 0 1 1 335 300 A 265 104 0 1 1 865 300');--speed:29s;--delay:-2s;color:#77d9eb">
+  <rect class="tile" x="-36" y="-37" width="72" height="74" rx="19"/>
+  <g transform="translate(0,-11)"><circle r="9" fill="none" stroke="currentColor" stroke-width="2.5"/><circle r="3" fill="currentColor"/></g>
+  <text x="0" y="22" text-anchor="middle">01</text>
+  <title>SIGNAL neutral demo node</title>
+</g>
+<g class="satellite s2" style="--track:path('M 800 300 C 790 150 500 150 400 300 C 410 450 700 450 800 300');--speed:23s;--delay:-12s;color:#c2a1ff">
+  <rect class="tile" x="-36" y="-37" width="72" height="74" rx="19"/>
+  <g transform="translate(0,-11)"><path d="M 0 -12 L 12 0 L 0 12 L -12 0 Z" fill="none" stroke="currentColor" stroke-width="2.3"/><path d="M -6 0 H 6" stroke="currentColor" stroke-width="2"/></g>
+  <text x="0" y="22" text-anchor="middle">02</text>
+  <title>FLOW neutral demo node</title>
+</g>
+<g class="satellite s3" style="--track:path('M 735 300 C 690 238 510 238 465 300 C 510 362 690 362 735 300');--speed:17s;--delay:-7s;color:#ffcc83">
+  <rect class="tile" x="-36" y="-37" width="72" height="74" rx="19"/>
+  <g transform="translate(0,-11)"><path d="M -11 10 V -1 M 0 10 V -11 M 11 10 V -5" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></g>
+  <text x="0" y="22" text-anchor="middle">03</text>
+  <title>STATE neutral demo node</title>
+</g>
+<g class="satellite s4" style="--track:path('M 865 300 A 265 104 0 1 1 335 300 A 265 104 0 1 1 865 300');--speed:29s;--delay:-16s;color:#92e9b5">
+  <rect class="tile" x="-36" y="-37" width="72" height="74" rx="19"/>
+  <g transform="translate(0,-11)"><rect x="-13" y="-13" width="10" height="10" rx="2" fill="currentColor"/><rect x="3" y="-13" width="10" height="10" rx="2" fill="currentColor"/><rect x="-13" y="3" width="10" height="10" rx="2" fill="currentColor"/><rect x="3" y="3" width="10" height="10" rx="2" fill="currentColor"/></g>
+  <text x="0" y="22" text-anchor="middle">04</text>
+  <title>SYSTEM neutral demo node</title>
+</g>
+<g class="satellite s5" style="--track:path('M 800 300 C 790 150 500 150 400 300 C 410 450 700 450 800 300');--speed:23s;--delay:-2s;color:#ffa6c7">
+  <rect class="tile" x="-36" y="-37" width="72" height="74" rx="19"/>
+  <g transform="translate(0,-11)"><circle cx="-12" cy="-8" r="5" fill="currentColor"/><circle cx="12" cy="-8" r="5" fill="currentColor"/><circle cx="0" cy="12" r="5" fill="currentColor"/><path d="M-8 -6 L-2 8 M8 -6 L2 8 M-7 -8 H7" stroke="currentColor" stroke-width="2"/></g>
+  <text x="0" y="22" text-anchor="middle">05</text>
+  <title>MODEL neutral demo node</title>
+</g>
+<g class="satellite s6" style="--track:path('M 735 300 C 690 238 510 238 465 300 C 510 362 690 362 735 300');--speed:17s;--delay:-14s;color:#8faeff">
+  <rect class="tile" x="-36" y="-37" width="72" height="74" rx="19"/>
+  <g transform="translate(0,-11)"><circle cx="-10" cy="-6" r="5" fill="currentColor"/><circle cx="10" cy="-6" r="5" fill="currentColor"/><circle cy="10" r="5" fill="currentColor"/></g>
+  <text x="0" y="22" text-anchor="middle">06</text>
+  <title>OUTPUT neutral demo node</title>
+</g>
+<text x="65" y="75" class="hint">ORBITAL STUDY / 001</text>
+<text x="65" y="550" class="hint" font-size="11">NO IDENTITY · NO EXTERNAL ASSETS · NO TRACKING</text>
+</svg>
