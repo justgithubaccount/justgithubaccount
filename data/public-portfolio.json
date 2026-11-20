@@ -94,5 +94,19 @@
   ],
   "publication_state": "RELEASE_APPROVED",
   "reviewed_on": "2026-10-30",
-  "schema_version": "public-portfolio.v1"
+  "schema_version": "public-portfolio.v2",
+  "upcoming": {
+    "boundary": "Coming soon: an architecture direction, not a published integration or running service. No public implementation link is provided.",
+    "category": "Context Layer",
+    "description": "Exploring how a Backstage service catalog and ContextRoot source routing could make components, registries, specs, and evidence easier to navigate.",
+    "id": "context-layer",
+    "problem": "How can people and AI agents find reliable context across a software ecosystem?",
+    "status": "COMING_SOON",
+    "tags": [
+      "Backstage",
+      "ContextRoot",
+      "Source navigation"
+    ],
+    "title": "Context, made navigable."
+  }
 }

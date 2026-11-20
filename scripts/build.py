@@ -38,8 +38,8 @@ def plain(value, maximum=500):
 
 
 def validate(data):
-    keys(data, 'schema_version reviewed_on publication_state identity projects')
-    require(data['schema_version'] == 'public-portfolio.v1', 'Unknown schema')
+    keys(data, 'schema_version reviewed_on publication_state identity projects upcoming')
+    require(data['schema_version'] == 'public-portfolio.v2', 'Unknown schema')
     require(data['publication_state'] in ('DRAFT', 'RELEASE_APPROVED'), 'Unsupported publication state')
     require(isinstance(data['reviewed_on'], str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}', data['reviewed_on']), 'Invalid review date')
     datetime.date.fromisoformat(data['reviewed_on'])
@@ -73,6 +73,13 @@ def validate(data):
             plain(p['verification_note'], 360)
             for note in notes.values():
                 plain(note, 240)
+    upcoming = data['upcoming']
+    keys(upcoming, 'id category title problem description boundary status tags')
+    require(upcoming['id'] == 'context-layer' and upcoming['category'] == 'Context Layer', 'Unreviewed upcoming direction')
+    require(upcoming['status'] == 'COMING_SOON', 'An upcoming direction is not a published implementation')
+    for key in ('id', 'category', 'title', 'problem', 'description', 'boundary'):
+        plain(upcoming[key], 45 if key in ('id', 'category', 'title') else 400)
+    require(isinstance(upcoming['tags'], list) and upcoming['tags'] == ['Backstage', 'ContextRoot', 'Source navigation'], 'Unreviewed direction tags')
     return data
 
 
@@ -95,6 +102,8 @@ def readme(d):
     out.append('## Selected public projects\n\nThree parts of one engineering lab: application, infrastructure and delivery.\n')
     for n, p in enumerate(d['projects'], 1):
         out.append(f'<a href="{repo_url(p)}">\n  <picture>\n    <source media="(max-width: 600px)" srcset="assets/project-{p["id"]}-compact.svg"/>\n    <img src="assets/project-{p["id"]}.svg" alt="{h(p["category"])}: {h(p["title"])} {h(", ".join(p["tags"]))}."/>\n  </picture>\n</a>\n\n{p["description"]}\n\n{p["boundary"]}\n\n[Read the source]({evidence_url(p, "README.md")}) · Revision `{p["revision"][:12]}`\n')
+    u = d['upcoming']
+    out.append(f'## Upcoming engineering question\n\n**{u["category"]}: {u["title"]}** · Coming soon\n\n{u["problem"]}\n\n{u["description"]}\n\n{u["boundary"]}\n')
     out.append(f'## Engineering focus\n\n{i["focus_intro"]}\n')
     for p in d['projects']:
         out.append(f'- **{p["focus"]}.** {p["focus_detail"]}')
@@ -138,6 +147,10 @@ def website(d):
     values = {'title': h(i['headline'] + ' — ' + i['name']), 'description': h(i['intro']), 'name': h(i['name']),
               'hero_lines': '<br/>'.join(h(line.rstrip('.') + '.') if n < 2 else '<span>' + h(line.rstrip('.') + '.') + '</span>' for n, line in enumerate(i['headline'].split('. '))),
               'intro': h(i['intro']), 'projects': '\n'.join(project_html), 'focus': focus,
+              'upcoming_id': h(d['upcoming']['id']), 'upcoming_category': h(d['upcoming']['category']),
+              'upcoming_title': h(d['upcoming']['title']), 'upcoming_problem': h(d['upcoming']['problem']),
+              'upcoming_description': h(d['upcoming']['description']), 'upcoming_boundary': h(d['upcoming']['boundary']),
+              'upcoming_tags': ''.join(f'<li>{h(t)}</li>' for t in d['upcoming']['tags']),
               'orbital_svg': art.interactive_artwork(),
               'focus_title': h(i['focus_title']), 'focus_intro': h(i['focus_intro']),
               'robots': 'index, follow' if d['publication_state'] == 'RELEASE_APPROVED' else 'noindex, nofollow',
@@ -170,6 +183,8 @@ def render(data):
     llms = [f'# {d["identity"]["name"]} / justgithubaccount\n', f'> {d["identity"]["intro"]}\n', 'Public code projects in an engineering lab. Repository snapshots describe code, not a live hosted service.\n', '## Public projects\n']
     for p in d['projects']:
         llms.append(f'- [{p["category"]}]({evidence_url(p, "README.md")}): {p["description"]} Revision: {p["revision"]}.')
+    u = d['upcoming']
+    llms.append(f'\n## Upcoming engineering question\n\n- {u["category"]} (Coming soon): {u["description"]} {u["boundary"]}')
     files['site/llms.txt'] = '\n'.join(llms) + '\n'
     files['site/.nojekyll'] = ''
     info = {

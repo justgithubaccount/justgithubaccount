@@ -54,6 +54,16 @@ Application code in an engineering lab; no hosted commercial service or customer
 
 [Read the source](https://github.com/justgithubaccount/app-poly-gitops-fastapi/blob/899ba6434745390c44c6965a0ebe48f3515a7170/README.md) · Revision `899ba6434745`
 
+## Upcoming engineering question
+
+**Context Layer: Context, made navigable.** · Coming soon
+
+How can people and AI agents find reliable context across a software ecosystem?
+
+Exploring how a Backstage service catalog and ContextRoot source routing could make components, registries, specs, and evidence easier to navigate.
+
+Coming soon: an architecture direction, not a published integration or running service. No public implementation link is provided.
+
 ## Engineering focus
 
 These projects explore three connected engineering problems. Each one links to the implementation so you can inspect the decisions, boundaries and code.

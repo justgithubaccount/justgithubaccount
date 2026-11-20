@@ -81,6 +81,27 @@
 <details><summary>Source evidence &amp; project scope</summary><p>Application code in an engineering lab; no hosted commercial service or customer results are claimed.</p><p>Trace a project chat from the API route through provider handling to a stored transcript, with trace IDs when available.</p><p>Public source snapshot: <code>899ba6434745</code></p><ul class="evidence"><li><a href="https://github.com/justgithubaccount/app-poly-gitops-fastapi/blob/899ba6434745390c44c6965a0ebe48f3515a7170/README.md">README.md</a> <span>Endpoint map, local startup steps, database options and verification commands.</span></li><li><a href="https://github.com/justgithubaccount/app-poly-gitops-fastapi/blob/899ba6434745390c44c6965a0ebe48f3515a7170/app/api.py">app/api.py</a> <span>Project and history routes, save-on-success behavior, trace IDs and provider error handling.</span></li><li><a href="https://github.com/justgithubaccount/app-poly-gitops-fastapi/blob/899ba6434745390c44c6965a0ebe48f3515a7170/app/core/llm_client.py">app/core/llm_client.py</a> <span>OpenRouter requests, response checks, latency and token instrumentation.</span></li><li><a href="https://github.com/justgithubaccount/app-poly-gitops-fastapi/blob/899ba6434745390c44c6965a0ebe48f3515a7170/tests/test_api.py">tests/test_api.py</a> <span>Mocked API tests for chat, project history, HTTP 502 errors and no history on failed replies.</span></li><li><a href="https://github.com/justgithubaccount/app-poly-gitops-fastapi/blob/899ba6434745390c44c6965a0ebe48f3515a7170/tests/test_observability.py">tests/test_observability.py</a> <span>Tests confirming disabled telemetry avoids OTLP exporters and middleware.</span></li></ul><p>How to verify: Use the README commands for local checks. The browser UI and GitOps delivery live in separate repositories; linked tests are not evidence of a deployed service.</p></details></div>
 </article>
     </section>
+    <section class="upcoming wrap" id="context-layer" aria-labelledby="context-heading">
+      <div class="section-heading"><h2 id="context-heading">Next engineering question<span class="count"> / 04</span></h2><p>An upcoming direction.<br/>No public implementation linked yet.</p></div>
+      <article class="project project-upcoming">
+        <div class="project-art context-art" role="img" aria-label="Concept illustration: Backstage catalog and ContextRoot routing point to context sources.">
+          <div class="context-stage" aria-hidden="true">
+            <div class="context-node context-catalog">Backstage<span>Service catalog</span></div>
+            <div class="context-node context-route">ContextRoot<span>Source routing</span></div>
+            <div class="context-node context-sources">Registries + Specs<span>Owner evidence</span></div>
+          </div>
+        </div>
+        <div class="project-copy">
+          <p class="project-category"><span>04</span> Context Layer</p>
+          <h3>Context, made navigable.</h3>
+          <p class="question">How can people and AI agents find reliable context across a software ecosystem?</p>
+          <p>Exploring how a Backstage service catalog and ContextRoot source routing could make components, registries, specs, and evidence easier to navigate.</p>
+          <ul class="tags" aria-label="Concepts"><li>Backstage</li><li>ContextRoot</li><li>Source navigation</li></ul>
+          <p class="upcoming-label">Coming soon · architecture direction</p>
+          <p class="upcoming-boundary">Coming soon: an architecture direction, not a published integration or running service. No public implementation link is provided.</p>
+        </div>
+      </article>
+    </section>
     <section class="approach" id="approach" aria-labelledby="approach-title"><div class="wrap">
       <div class="approach-intro"><h2 id="approach-title">A clearer path from code to delivery.</h2><p>These projects explore three connected engineering problems. Each one links to the implementation so you can inspect the decisions, boundaries and code.</p></div>
       <ol class="focus-list"><li><span class="focus-number">01</span><h3>Reviewable deployments</h3><p>Express the desired environment in Git, with explicit application and platform boundaries.</p><a href="#k8s">See the project <span aria-hidden="true">↗</span></a></li><li><span class="focus-number">02</span><h3>Repeatable environments</h3><p>Keep provisioning, bootstrap and cleanup steps visible instead of relying on undocumented setup.</p><a href="#infra">See the project <span aria-hidden="true">↗</span></a></li><li><span class="focus-number">03</span><h3>Traceable AI applications</h3><p>Connect API behavior, conversation persistence and telemetry in one inspectable backend.</p><a href="#fastapi">See the project <span aria-hidden="true">↗</span></a></li></ol>

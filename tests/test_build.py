@@ -46,6 +46,10 @@ class BuildTests(unittest.TestCase):
             lambda d: d['identity'].update(intro='hidden\x00value'),
             lambda d: d['identity'].update(intro='[injected](https://evil.example)'),
             lambda d: d.update(publication_state='PUBLIC'),
+            lambda d: d['upcoming'].update(status='PUBLIC'),
+            lambda d: d['upcoming'].update(repository='justgithubaccount/unapproved'),
+            lambda d: d['upcoming'].update(description='<script>'),
+            lambda d: d['upcoming'].update(id='unreviewed'),
             lambda d: d['projects'][0].update(title='x' * 2000),
             lambda d: d['projects'][0].update(evidence=['README.md?redirect=evil']),
             lambda d: d['projects'][2]['evidence_explanations'].update({'README.md': '<script>'}),
@@ -68,6 +72,18 @@ class BuildTests(unittest.TestCase):
         for path, note in project['evidence_explanations'].items():
             self.assertIn(self.b.evidence_url(project, path), page)
             self.assertIn(note, page)
+
+    def test_unlinked_context_layer_is_not_a_published_project(self):
+        files = self.b.render(self.data)
+        html = files['site/index.html']
+        self.assertIn('id="context-layer"', html)
+        self.assertIn('Coming soon', html)
+        self.assertIn('Backstage', html)
+        self.assertIn('ContextRoot', html)
+        self.assertIn(self.data['upcoming']['boundary'], html)
+        self.assertIn('Upcoming engineering question', files['README.md'])
+        self.assertIn('Upcoming engineering question', files['site/llms.txt'])
+        self.assertEqual(len(self.b.structured(self.data)['@graph'][1]['hasPart']), 3)
 
     def test_vector_assets_are_safe_and_described(self):
         files = self.b.render(self.data)
