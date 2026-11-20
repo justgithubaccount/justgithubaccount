@@ -1,29 +1,39 @@
-# Anonymous orbital SVG experiment (study 002)
+# Anonymous orbital animation — study 002
 
-Task: [ANON_ORBIT_SVG_DEMO_V1](https://github.com/justgithubaccount/justgithubaccount/issues/6)
+> Isolated visual prototype. Not a profile, product, release, or deployed website.
 
-Standalone, original, non-identifying visual experiment. It is not part of the generated public profile, Pages export or production site.
+## GitHub README image preview
 
-## Preview
+<picture>
+  <source media="(max-width: 640px)" srcset="./orbit-mobile.svg">
+  <img src="./orbit.svg" alt="Six anonymous numbered nodes orbit a clear CORE label. A separate square composition is selected on narrow screens." width="100%">
+</picture>
 
-Open `index.html` directly, or serve the directory locally:
+This embedded image is the **GitHub Markdown rendering test**. Direct SVG file preview and README image rendering are different contexts. Whether GitHub's image proxy preserves animation must be observed in a real browser; a successful CI run cannot prove it.
+
+[Desktop SVG](./orbit.svg) · [Mobile SVG](./orbit-mobile.svg)
+
+## Local HTML preview
+
+To test the full responsive standalone page, from the repository root run:
 
 ```sh
 python3 -m http.server 8765 --bind 127.0.0.1 --directory experiments/anonymous-orbits
 ```
 
-Then visit `http://127.0.0.1:8765/`. Desktop selects `orbit.svg` and viewport widths below 641px select the square `orbit-mobile.svg` composition.
+Open `http://127.0.0.1:8765/`. The HTML page switches between the wide and square SVG compositions at a 640px viewport. It is **not** deployed by this branch.
 
-## Behavior
+## Checks
 
-- Desktop: six neutral numbered nodes on three separate elliptical tracks, with opposite pairs and independent 42 / 30 / 20 second orbit durations. Each node is moved by explicit SVG-coordinate CSS transforms along the visible ellipse, preventing unexpected motion-path origin shifts.
-- Mobile: square composition with six evenly separated nodes, a common 30-second period, and a readable center.
-- Both variants provide accessible SVG titles/descriptions and a static non-overlapping arrangement under `prefers-reduced-motion: reduce`.
-- HTML has `noindex,nofollow`. All assets are local. No JavaScript, remote dependencies, scripts, analytics or tracking.
-- The artwork is original; the external orbital reference is a conceptual reference only, with no copied assets.
+```sh
+python3 experiments/anonymous-orbits/check.py
+```
 
-## Delivery status
+The offline check validates XML, six neutral nodes per composition, CSS animation/reduced-motion declarations, local-only resources, the README image embed and separation from the generated portfolio. It cannot establish browser motion, GitHub image-proxy behavior or human visual acceptance.
 
-Draft PR is a review artifact, **not a deployment**. Browser and manual QA are separate from CI and operator acceptance. Do not merge, deploy, or connect it to public surfaces without explicit operator authorization.
+- Desktop: three nested elliptical tracks, three independent orbital periods (42 / 30 / 20 seconds), six anonymous numbered nodes.
+- Mobile: a square composition with six separated nodes, evenly phased around a 30-second cycle.
+- Both: no JavaScript, third-party images, tracking or external network resources. `prefers-reduced-motion` produces stationary nodes.
+- The preview uses only local assets; `index.html` includes `noindex,nofollow`.
 
-Implementation stays isolated under `experiments/anonymous-orbits/`.
+This experiment must remain under `experiments/anonymous-orbits/`. Do not merge, publish, enable Pages or alter the public profile without separate operator authorization.
