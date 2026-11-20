@@ -21,7 +21,7 @@ def require(test: bool, message: str) -> None:
         raise AssertionError(message)
 
 
-def inspect_svg(filename: str, node_class: str, expected_box: str) -> None:
+def inspect_svg(filename: str, node_class: str, expected_box: str, static: bool = False) -> None:
     source = (ROOT / filename).read_text(encoding="utf-8")
     root = ET.fromstring(source)
     require(root.tag == f"{SVG_NS}svg", f"{filename}: invalid SVG root")
@@ -36,7 +36,10 @@ def inspect_svg(filename: str, node_class: str, expected_box: str) -> None:
     css = root.find(f"{SVG_NS}style")
     require(css is not None and css.text is not None, f"{filename}: missing CSS")
     require("@keyframes " in css.text, f"{filename}: missing animation")
-    require("prefers-reduced-motion:reduce" in css.text, f"{filename}: missing reduced motion")
+    if static:
+        require("@media all" in css.text, f"{filename}: still SVG does not force static layout")
+    else:
+        require("prefers-reduced-motion:reduce" in css.text, f"{filename}: missing reduced motion")
     require("animation:none!important" in css.text, f"{filename}: reduced-motion animation not disabled")
 
     elements = list(root.iter())
@@ -88,21 +91,29 @@ def inspect_svg(filename: str, node_class: str, expected_box: str) -> None:
 def main() -> None:
     inspect_svg("orbit.svg", "satellite", "0 0 1200 600")
     inspect_svg("orbit-mobile.svg", "mobile-node", "0 0 600 600")
+    inspect_svg("orbit-static.svg", "satellite", "0 0 1200 600", static=True)
+    inspect_svg("orbit-mobile-static.svg", "mobile-node", "0 0 600 600", static=True)
     desktop = (ROOT / "orbit.svg").read_text(encoding="utf-8")
     require(all(f"animation:{k} {t}s" in desktop
                 for k, t in (("outer", 42), ("middle", 30), ("inner", 20))),
             "desktop: three independent speeds absent")
     html = (ROOT / "index.html").read_text(encoding="utf-8")
     require('content="noindex,nofollow"' in html, "HTML: not marked noindex")
-    require('data="orbit.svg"' in html and 'data="orbit-mobile.svg"' in html,
-            "HTML: missing responsive local SVG references")
+    require('<picture>' in html and 'src="orbit.svg"' in html,
+            "HTML: missing responsive image container")
+    source_order = ['orbit-mobile-static.svg', 'orbit-static.svg', 'orbit-mobile.svg', 'src="orbit.svg"']
+    require(all(x in html for x in source_order), "HTML: missing variant sources")
+    require([html.index(x) for x in source_order] == sorted(html.index(x) for x in source_order),
+            "HTML: media sources in wrong priority order")
     require("max-width:640px" in html, "HTML: missing mobile breakpoint")
     require(not re.search(r"<script\b|https?://(?!127\.0\.0\.1)|@import\b", html, re.I),
             "HTML: disallowed active or remote resource")
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     require("<picture>" in readme and 'srcset="./orbit-mobile.svg"' in readme
-            and 'src="./orbit.svg"' in readme, "README: responsive GitHub embed missing")
-    print("PASS: XML, 6+6 nodes, orbits/core separation, reduced-motion, no external assets, HTML/README preview")
+            and 'src="./orbit-mobile-static.svg"' in readme
+            and 'srcset="./orbit-static.svg"' in readme
+            and 'src="./orbit.svg"' in readme, "README: responsive/still GitHub embed missing")
+    print("PASS: 4 SVG XML variants, 6 nodes each, core separation, static fallbacks, offline HTML/README picture")
 
 
 if __name__ == "__main__":
