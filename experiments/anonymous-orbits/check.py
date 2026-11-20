@@ -58,7 +58,8 @@ def inspect_svg(filename: str, node_class: str, expected_box: str) -> None:
         not any(e.tag.rsplit("}", 1)[-1] in disallowed_tags for e in elements),
         f"{filename}: disallowed interactive or external SVG element",
     )
-    require(not re.search(r"@import\b|https?://|javascript:|data:", source, re.I),
+    scan = source.replace("http://www.w3.org/2000/svg", "")
+    require(not re.search(r"@import\b|https?://|javascript:|data:", scan, re.I),
             f"{filename}: external/import resource or executable URL")
     require(not any("href" in key.lower() for e in elements for key in e.attrib),
             f"{filename}: unexpected SVG link")
