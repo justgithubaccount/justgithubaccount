@@ -105,7 +105,7 @@ Markdown preview does not prove the special profile or GitHub image proxy is liv
 The website intentionally uses the dark art direction in either OS theme. Standalone SVGs
 have their own opaque backgrounds and system fonts; no web fonts, external
 resources, raster payloads or vendor emblems are used. The website has one
-optional local script; Profile README SVG images remain completely static.
+optional local script; Original Profile SVG assets remain static. Optional generated `assets/hero-animated.svg` adds three orbiting, manifest-derived public project categories to the desktop Profile hero. The `<picture>` fallback selects the original static hero when reduced motion is requested and the existing compact hero on mobile. No JavaScript or external resources are used in the README.
 
 The decorative two-ring header mark rotates independently in CSS, one linear
 turn every 16 seconds from its existing -35° resting orientation. It starts on
