@@ -45,6 +45,27 @@
       <div class="section-heading"><h2 id="work-title">Selected work<span class="count"> / 03</span></h2><p>Three connected projects.<br/>One inspectable engineering lab.</p></div>
       {{projects}}
     </section>
+    <section class="upcoming wrap" id="{{upcoming_id}}" aria-labelledby="context-heading">
+      <div class="section-heading"><h2 id="context-heading">Next engineering question<span class="count"> / 04</span></h2><p>An upcoming direction.<br/>No public implementation linked yet.</p></div>
+      <article class="project project-upcoming">
+        <div class="project-art context-art" role="img" aria-label="Concept illustration: Backstage catalog and ContextRoot routing point to context sources.">
+          <div class="context-stage" aria-hidden="true">
+            <div class="context-node context-catalog">Backstage<span>Service catalog</span></div>
+            <div class="context-node context-route">ContextRoot<span>Source routing</span></div>
+            <div class="context-node context-sources">Registries + Specs<span>Owner evidence</span></div>
+          </div>
+        </div>
+        <div class="project-copy">
+          <p class="project-category"><span>04</span> {{upcoming_category}}</p>
+          <h3>{{upcoming_title}}</h3>
+          <p class="question">{{upcoming_problem}}</p>
+          <p>{{upcoming_description}}</p>
+          <ul class="tags" aria-label="Concepts">{{upcoming_tags}}</ul>
+          <p class="upcoming-label">Coming soon · architecture direction</p>
+          <p class="upcoming-boundary">{{upcoming_boundary}}</p>
+        </div>
+      </article>
+    </section>
     <section class="approach" id="approach" aria-labelledby="approach-title"><div class="wrap">
       <div class="approach-intro"><h2 id="approach-title">{{focus_title}}</h2><p>{{focus_intro}}</p></div>
       <ol class="focus-list">{{focus}}</ol>

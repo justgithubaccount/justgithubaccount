@@ -1,7 +1,7 @@
 # Maintaining the public portfolio
 
 `data/public-portfolio.json` is the only editorial input. It is a curated public
-projection of three approved code repositories, never their technical authority.
+projection of three approved code repositories and one unlinked upcoming Context Layer question, never their technical authority.
 Templates and `scripts/art.py` define presentation, including the optional local
 `templates/orbital.js` enhancement for the website hero. Generated files must not be
 edited by hand. Python 3.10+ and its standard library are sufficient; CI uses 3.12.
@@ -67,6 +67,14 @@ Compare the export to the reviewed profile commit before
 opening its separate Draft PR. Those hashes detect byte drift; they are not
 signatures or operator approval. Record the exact profile source commit in the
 website PR description after that commit exists remotely.
+
+## Upcoming directions
+
+The manifest `upcoming` entry is a public-facing editorial placeholder, with a strict
+`COMING_SOON` status and no repository, source SHA or runtime claim. It is rendered
+on the profile README, website and text overview but remains outside the three
+`SoftwareSourceCode` records and the pinned-source verifier. Additional directions
+require a new review; this is not a fixed limit of four engineering topics.
 
 ## Publication gate
 

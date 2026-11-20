@@ -19,7 +19,8 @@ class AuditTests(unittest.TestCase):
 
     def test_public_urls_are_exact_not_prefixes(self):
         for url in ['https://github.com/justgithubaccount/app-poly-gitops-k8s',
-                    'https://github.com/justgithubaccount/app-poly-gitops-fastapi/blob/' + 'a' * 40 + '/app/api.py']:
+                    'https://github.com/justgithubaccount/app-poly-gitops-fastapi/blob/' + 'a' * 40 + '/app/api.py',
+                     'https://github.com/justgithubaccount/app-poly-gitops-fastapi/blob/' + 'a' * 40 + '/tests/test_api.py']:
             self.assertTrue(audit.public_url(url))
         for url in ['https://github.com.evil.example/justgithubaccount/app-poly-gitops-k8s',
                     'https://github.com/justgithubaccount/private-repo',
