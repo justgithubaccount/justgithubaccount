@@ -112,6 +112,29 @@ turn every 16 seconds from its existing -35° resting orientation. It starts on
 page load, including without JavaScript. Reduced motion disables it and restores
 the resting mark. Hero Play/Pause and Static artwork do not affect the header.
 
+## Public-source ChatGPT handoff experiment
+
+A single link is drawn **inside the inline SVG on the website hero**. Hover
+and keyboard focus gently pulse the linked node with CSS; touch can activate the
+same link. The SVG is a native link, not a JavaScript click handler. When users
+prefer reduced motion, the link remains visible without the pulse. The existing
+helix slider, drag, Play/Pause, and static fallback are unchanged.
+
+The destination is a prefilled public-source research request at chatgpt.com.
+It cites GitHub, Pages and llms.txt and explicitly asks for evidence-backed claims.
+The link **does not grant access** to private SELF/Notion/app data and cannot
+guarantee the ChatGPT account ignores its own connected context. A visitor may
+need to send the prefilled prompt; this URL format is an experimental deep link.
+
+A strict exception in audit.py allows one exact outbound link only within the
+inline website SVG, pinned by ASK_AI_URL_SHA256 independently from export
+hashes. Standalone SVG assets and GitHub README images stay noninteractive,
+because SVG links embedded via img cannot be clicked. Any prompt edit must
+review and update the independent URL digest and rerun negative security tests.
+No executable scripts, tracking or extra external resources are added.
+This Draft PR changes no Pages repository and requires separate visual,
+accessibility and publication approval.
+
 ## Interactive orbital hero
 
 `PUBLIC_PORTFOLIO_INTERACTIVE_ORBITAL_V1` adds progressive enhancement only to

@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 import re
 import sys
+from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import art
@@ -104,6 +105,19 @@ def structured(d):
         ]}
 
 
+def ask_ai_url():
+    """A public-only research handoff; it cannot grant access to private data."""
+    prompt = (
+        'Отвечай по-русски. Подготовь независимый технический обзор Jenya / justgithubaccount только по публичным источникам.\n'
+        'Проверь https://github.com/justgithubaccount, https://justgithubaccount.github.io/ и https://justgithubaccount.github.io/llms.txt.\n'
+        'Изучи связанные открытые репозитории, закреплённые commit SHA и доступные GitHub Actions.\n'
+        'Объясни инженерные задачи GitOps, Cloud Infrastructure и Applications & Services, связи между проектами, подтверждённые реализации и ограничения.\n'
+        'Разделяй подтверждённые факты, аналитические выводы и UNKNOWN. Приводи прямые ссылки на доказательства.\n'
+        'Не используй память, приватные чаты, подключённые приложения и закрытые документы. Не выдумывай опыт работы, клиентов, production или коммерческие результаты.'
+    )
+    return 'https://chatgpt.com/?hints=search&q=' + quote(prompt, safe='')
+
+
 def website(d):
     i = d['identity']
     project_html = []
@@ -122,7 +136,7 @@ def website(d):
     values = {'title': h(i['headline'] + ' — ' + i['name']), 'description': h(i['intro']), 'name': h(i['name']),
               'hero_lines': '<br/>'.join(h(line.rstrip('.') + '.') if n < 2 else '<span>' + h(line.rstrip('.') + '.') + '</span>' for n, line in enumerate(i['headline'].split('. '))),
               'intro': h(i['intro']), 'projects': '\n'.join(project_html), 'focus': focus,
-              'orbital_svg': art.interactive_artwork(),
+              'orbital_svg': art.interactive_artwork(ask_ai_url()),
               'focus_title': h(i['focus_title']), 'focus_intro': h(i['focus_intro']),
               'robots': 'index, follow' if d['publication_state'] == 'RELEASE_APPROVED' else 'noindex, nofollow',
               'json_ld': json.dumps(structured(d), ensure_ascii=False, separators=(',', ':')).replace('<', '\\u003c')}

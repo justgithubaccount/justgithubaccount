@@ -25,6 +25,8 @@ EXPORT_FILES = {'index.html', 'styles.css', 'robots.txt', 'sitemap.xml', 'llms.t
 
 # Pin reviewed executable bytes independently of the editable export manifest.
 ORBITAL_JS_SHA256 = 'cd71519c6e75cb50d2f8e9bda3c1a0c61fc75feee74f69e54f31ab0457a585c0'
+# Independently reviewed, exact outbound AI handoff. Rehashing the export cannot change it.
+ASK_AI_URL_SHA256 = '4ecf51f919da2666a0df9ece5eb7c731ad46ab8a79c2ebe0cf33e05345c5b086'
 
 
 def require(ok, message):
@@ -32,7 +34,16 @@ def require(ok, message):
         raise ValueError(message)
 
 
+def is_ask_ai_url(url):
+    u = urlsplit(url)
+    return (u.scheme == 'https' and u.netloc == 'chatgpt.com' and u.path == '/'
+            and not u.fragment and u.query.startswith('hints=search&q=')
+            and hashlib.sha256(url.encode('utf-8')).hexdigest() == ASK_AI_URL_SHA256)
+
+
 def public_url(url):
+    if is_ask_ai_url(url):
+        return True
     if url in (PROFILE, SITE):
         return True
     u = urlsplit(url)
@@ -116,7 +127,7 @@ class Page(HTMLParser):
             name = {'lineargradient': 'linearGradient', 'radialgradient': 'radialGradient'}.get(tag, tag)
             self.svg_buffer += f'</{name}>'
             if tag == 'svg':
-                svg = audit_svg_text(self.svg_buffer)
+                svg = audit_svg_text(self.svg_buffer, site_hero=True)
                 ids = {n.attrib['id'] for n in svg.iter() if 'id' in n.attrib}
                 require(not ids & self.ids, 'Duplicate inline SVG/HTML id')
                 self.ids.update(ids)
@@ -156,7 +167,7 @@ def audit_svg(path):
     return True
 
 
-def audit_svg_text(text):
+def audit_svg_text(text, *, site_hero=False):
     require(len(text.encode()) < 100_000, 'SVG exceeds byte budget')
     require(not re.search(r'<\?|<!DOCTYPE|<!ENTITY', text, re.I), 'SVG processing instruction or entity declaration')
     try:
@@ -170,10 +181,21 @@ def audit_svg_text(text):
     require(len(ids) == sum('id' in node.attrib for node in root.iter()), 'Duplicate SVG id')
     allowed = {'svg', 'title', 'desc', 'defs', 'linearGradient', 'radialGradient', 'stop', 'path', 'rect', 'circle', 'ellipse', 'g', 'text'}
     attributes = {'id', 'viewBox', 'role', 'aria-labelledby', 'x1', 'y1', 'x2', 'y2', 'offset', 'stop-color', 'stop-opacity', 'cx', 'cy', 'r', 'fill', 'stroke', 'stroke-width', 'opacity', 'stroke-dasharray', 'rx', 'ry', 'x', 'y', 'width', 'height', 'transform', 'd', 'font-family', 'font-size', 'font-weight'}
+    links = []
     for node in root.iter():
-        require(node.tag.startswith('{http://www.w3.org/2000/svg}') and node.tag.rsplit('}', 1)[-1] in allowed, 'Non-static SVG element')
+        tag = node.tag.rsplit('}', 1)[-1]
+        require(node.tag.startswith('{http://www.w3.org/2000/svg}') and (tag in allowed or site_hero and tag == 'a'), 'Non-static SVG element')
+        if tag == 'a':
+            require(site_hero and node.attrib.get('id') == 'orbital-ai-link', 'Unapproved SVG link')
+            require(set(node.attrib) == {'id', 'href', 'target', 'rel', 'tabindex', 'aria-label'}, 'Unapproved SVG link attributes')
+            require(is_ask_ai_url(node.attrib['href']), 'Unreviewed ChatGPT prompt URL')
+            require(node.attrib['target'] == '_blank' and node.attrib['rel'] == 'noopener noreferrer' and node.attrib['tabindex'] == '0', 'Unsafe SVG link handling')
+            require(node.attrib['aria-label'] == 'Ask ChatGPT about Jenya using public sources', 'Unreviewed SVG link label')
+            links.append(node)
         for name, value in node.attrib.items():
-            require(name in attributes, 'SVG unsupported attribute')
+            require(name in (attributes | ({'href', 'target', 'rel', 'tabindex', 'aria-label'} if tag == 'a' else set())), 'SVG unsupported attribute')
+            if name == 'href' and tag == 'a':
+                continue  # Exact ChatGPT URL is already independently pinned.
             require(not re.search(r'https?:|data:|javascript:|@font-face', value), 'SVG external resource')
             if name in ('fill', 'stroke', 'stop-color'):
                 require(re.fullmatch(r'#[0-9a-fA-F]{3,8}|none|currentColor|url\(#[A-Za-z][\w-]*\)', value), 'Unsupported SVG paint value')
@@ -182,6 +204,9 @@ def audit_svg_text(text):
     for node in root.iter():
         if 'aria-labelledby' in node.attrib:
             require(all(ref in ids for ref in node.attrib['aria-labelledby'].split()), 'SVG unresolved label reference')
+    require(len(links) == (1 if site_hero else 0), 'Missing or extra SVG link')
+    if site_hero:
+        require(root.attrib.get('role') == 'group', 'Inline SVG link is hidden from assistive technology')
     return root
 
 
