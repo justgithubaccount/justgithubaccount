@@ -77,19 +77,34 @@ def artwork(kind, title):
     return shell(600, 640, title, 'Original orbital line art with luminous blue and violet connections on a deep navy field.', field(kind))
 
 
-def interactive_artwork():
+def ask_ai_marker(href):
+    """Only the inline site SVG receives a native, keyboard-accessible link."""
+    return f'''<a id="orbital-ai-link" href="{escape(href, quote=True)}" target="_blank" rel="noopener noreferrer" tabindex="0" aria-label="Ask ChatGPT about Jenya using public sources">
+<g id="orbital-ai-node">
+<circle id="orbital-ai-halo" cx="476" cy="532" r="58" fill="#777bff" opacity=".12"/>
+<rect id="orbital-ai-panel" x="363" y="497" width="224" height="72" rx="16" fill="#111a35" stroke="#7f78dc" stroke-width="1.5"/>
+<circle cx="395" cy="533" r="17" fill="#252a51" stroke="#96dbf5"/>
+<text x="385" y="538" font-family="Arial" font-size="13" font-weight="600" fill="#f1f2ff">AI</text>
+<text x="423" y="525" font-family="Arial" font-size="14" font-weight="600" fill="#f1f2ff">ASK CHATGPT</text>
+<text x="423" y="546" font-family="Arial" font-size="11" fill="#c7cce1">ABOUT MY WORK</text>
+</g>
+</a>'''
+
+
+def interactive_artwork(ask_url):
     """Inline, inert first frame. Profile/image assets retain their exact bytes."""
     body = field('hero', background=False)
     stars = constellation(600, 640)
     body = body.replace(stars, '<g id="orbital-field">' + stars, 1)
     braid = helix(300, 92, 434, 62)
     body = body.replace(braid, '</g><g id="orbital-static-helix">' + braid + '</g>', 1)
+    body += '\n' + ask_ai_marker(ask_url)
     svg = shell(600, 640, 'Braided orbital field',
                 'Original blue and violet orbital artwork with two interwoven strands.', body)
     # Namespace every inline ID to avoid collisions with HTML landmarks.
     for name in ('title', 'desc', 'strand', 'glow', 'panel'):
         svg = svg.replace(f'id="{name}"', f'id="orbital-{name}"').replace(f'#{name})', f'#orbital-{name})')
-    return svg.replace('aria-labelledby="title desc"', 'aria-labelledby="orbital-title orbital-desc"')
+    return svg.replace('aria-labelledby="title desc"', 'aria-labelledby="orbital-title orbital-desc"').replace('role="img"', 'role="group"', 1)
 
 
 def hero(data):

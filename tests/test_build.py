@@ -123,6 +123,27 @@ class BuildTests(unittest.TestCase):
         self.assertNotIn('<script', files['README.md'])
         self.assertNotIn('orbital-static-helix', files['assets/hero.svg'])
 
+    def test_interactive_svg_chatgpt_handoff_is_public_only(self):
+        from urllib.parse import parse_qs, urlsplit
+        files = self.b.render(self.data)
+        page = files['site/index.html']
+        inline = ET.fromstring(page[page.index('<svg '):page.index('</svg>') + 6])
+        link = inline.find('.//{http://www.w3.org/2000/svg}a[@id="orbital-ai-link"]')
+        self.assertIsNotNone(link)
+        self.assertEqual(inline.attrib['role'], 'group')
+        self.assertEqual(link.attrib['href'], self.b.ask_ai_url())
+        self.assertEqual(link.attrib['target'], '_blank')
+        self.assertEqual(link.attrib['rel'], 'noopener noreferrer')
+        self.assertEqual(link.attrib['tabindex'], '0')
+        prompt = parse_qs(urlsplit(link.attrib['href']).query)['q'][0]
+        self.assertIn('https://justgithubaccount.github.io/llms.txt', prompt)
+        self.assertIn('https://github.com/justgithubaccount', prompt)
+        self.assertIn('Не используй память', prompt)
+        self.assertNotIn('orbital-ai-link', files['assets/hero.svg'])
+        self.assertIn('#orbital-ai-link:hover', files['site/styles.css'])
+        self.assertIn('#orbital-ai-link:focus-visible', files['site/styles.css'])
+        self.assertIn('prefers-reduced-motion:reduce', files['site/styles.css'])
+
     def test_only_inline_hero_has_transparent_background(self):
         files = self.b.render(self.data)
         page = files['site/index.html']

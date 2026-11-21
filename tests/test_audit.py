@@ -65,6 +65,36 @@ class AuditTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     audit.audit_site(out)
 
+    def test_only_pinned_chatgpt_link_is_allowed_in_inline_svg(self):
+        url = build.ask_ai_url()
+        self.assertTrue(audit.is_ask_ai_url(url))
+        self.assertTrue(audit.public_url(url))
+        self.assertFalse(audit.public_url(url + 'x'))
+        self.assertFalse(audit.public_url(url.replace('chatgpt.com', 'chatgpt.com.evil.example')))
+        self.assertFalse(audit.public_url(url.replace('hints=search', 'hints=other')))
+        base = build.render(self.data)['site/index.html']
+        for mutated in [
+            base.replace('hints=search', 'hints=other', 1),
+            base.replace('target="_blank" rel="noopener noreferrer"', 'target="_self" rel="noopener noreferrer"', 1),
+            base.replace('id="orbital-ai-link"', 'id="orbital-ai-link" onclick="alert(1)"', 1),
+            base.replace('</a>\n</svg>', '</a><a href="https://evil.example">extra</a>\n</svg>', 1),
+            base.replace('role="group" aria-labelledby="orbital-title orbital-desc"', 'role="img" aria-labelledby="orbital-title orbital-desc"', 1),
+        ]:
+            with self.subTest(mutated=mutated[:100]), tempfile.TemporaryDirectory() as tmp:
+                out = Path(tmp)
+                build.export_pages(self.data, out)
+                target = out / 'index.html'
+                target.write_text(mutated)
+                info = json.loads((out / 'build-info.json').read_text())
+                info['files']['index.html'] = hashlib.sha256(target.read_bytes()).hexdigest()
+                (out / 'build-info.json').write_text(json.dumps(info))
+                with self.assertRaises(ValueError):
+                    audit.audit_site(out)
+        # A link must never become executable or clickable in standalone README art.
+        static = build.render(self.data)['assets/hero.svg'].replace('</svg>', '<a href="' + url + '"/>\n</svg>')
+        with self.assertRaises(ValueError):
+            audit.audit_svg_text(static)
+
     def test_svg_rejects_raster_script_and_remote_resources(self):
         base = build.render(self.data)['assets/hero.svg']
         for extra in ['<image href="data:image/png;base64,AAAA"/>', '<script/>', '<foreignObject/>', '<path onclick="x()"/>', '<path fill="url(https://evil.example)"/>']:

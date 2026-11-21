@@ -67,3 +67,13 @@ details[open] summary{color:var(--accent)}
 @media(max-width:720px){.orbital-art{max-height:410px;max-width:384.375px;margin-inline:auto}.orbital-controls{margin-top:14px}}
 @media(prefers-reduced-motion:reduce){.identity-orbit{animation:none}.helix-control,.orbital-controls,#orbital-moving-helix{display:none!important}#orbital-static-helix{visibility:visible}}
 @media(forced-colors:active){.helix-control:focus-visible,.orbital-buttons button:focus-visible{outline-color:Highlight}.orbital-buttons button{border-color:ButtonText}}
+
+/* Native SVG handoff: interactive only on hover or keyboard focus, never on load. */
+#orbital-ai-link{cursor:pointer}
+#orbital-ai-panel{transition:fill .2s ease,stroke .2s ease,stroke-width .2s ease}
+#orbital-ai-halo{transform-box:fill-box;transform-origin:center;pointer-events:none}
+#orbital-ai-link:hover #orbital-ai-panel,#orbital-ai-link:focus-visible #orbital-ai-panel{fill:#1e2850;stroke:#96dbf5;stroke-width:2.5}
+#orbital-ai-link:hover #orbital-ai-halo,#orbital-ai-link:focus-visible #orbital-ai-halo{animation:orbital-ai-pulse 1.35s ease-in-out infinite}
+@keyframes orbital-ai-pulse{0%,100%{opacity:.14;transform:scale(1)}50%{opacity:.42;transform:scale(1.14)}}
+@media(prefers-reduced-motion:reduce){#orbital-ai-panel{transition:none!important}#orbital-ai-halo{animation:none!important}}
+@media(forced-colors:active){#orbital-ai-link:focus-visible #orbital-ai-panel{stroke:Highlight}}
