@@ -67,3 +67,6 @@ details[open] summary{color:var(--accent)}
 @media(max-width:720px){.orbital-art{max-height:410px;max-width:384.375px;margin-inline:auto}.orbital-controls{margin-top:14px}}
 @media(prefers-reduced-motion:reduce){.identity-orbit{animation:none}.helix-control,.orbital-controls,#orbital-moving-helix{display:none!important}#orbital-static-helix{visibility:visible}}
 @media(forced-colors:active){.helix-control:focus-visible,.orbital-buttons button:focus-visible{outline-color:Highlight}.orbital-buttons button{border-color:ButtonText}}
+
+/* Pinned evidence descriptions follow source paths and remain readable on narrow screens. */
+.evidence li span{display:block;color:var(--muted);font-size:12px;line-height:1.6;padding-top:3px}

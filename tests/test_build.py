@@ -48,6 +48,9 @@ class BuildTests(unittest.TestCase):
             lambda d: d.update(publication_state='PUBLIC'),
             lambda d: d['projects'][0].update(title='x' * 2000),
             lambda d: d['projects'][0].update(evidence=['README.md?redirect=evil']),
+            lambda d: d['projects'][0]['evidence_explanations'].pop('README.md'),
+            lambda d: d['projects'][1]['evidence_explanations'].update({'Taskfile.yaml': '<script>'}),
+            lambda d: d['projects'][0]['evidence'].append('bad.md'),
         ]
         for mutate in mutations:
             with self.subTest(mutation=mutate), tempfile.TemporaryDirectory() as out:
@@ -56,6 +59,18 @@ class BuildTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.b.build(d, Path(out))
                 self.assertEqual(list(Path(out).iterdir()), [])
+
+    def test_gitops_and_infra_evidence_at_pinned_revisions(self):
+        page = self.b.render(self.data)['site/index.html']
+        for project in self.data['projects'][:2]:
+            self.assertEqual(set(project['evidence_explanations']), set(project['evidence']))
+            self.assertIn(project['evidence_summary'], page)
+            self.assertIn('How to verify: ' + project['verification_note'], page)
+            for path, note in project['evidence_explanations'].items():
+                self.assertIn(self.b.evidence_url(project, path), page)
+                self.assertIn(note, page)
+        self.assertEqual(page.count('Source evidence &amp; project scope'), 3)
+        self.assertEqual(len(self.b.structured(self.data)['@graph'][1]['hasPart']), 3)
 
     def test_vector_assets_are_safe_and_described(self):
         files = self.b.render(self.data)

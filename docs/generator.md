@@ -45,6 +45,15 @@ It uses no time, random seed, machine path or Git working-tree state in output.
 Generation overwrites only named outputs and never deletes files; remove stale
 generated files deliberately after reviewing the failing check.
 
+## Source-backed GitOps and infrastructure disclosures
+
+The GitOps and cloud infrastructure evidence disclosures annotate each approved
+path with an explanation tied to an exact source SHA. They describe reviewed code
+and offline checks, not operational runtime, cluster existence, billable results
+or live service availability. Changes to evidence require updating the exact
+allowlists, tests and generated projection before separate publication review.
+This independent PR does not include the FastAPI or Context Layer changes in PR #5.
+
 ## Exporting to the website repository
 
 After profile review, use an isolated checkout of the exact website repository:
