@@ -16,8 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE_URL = 'https://justgithubaccount.github.io/'
 PROFILE_URL = 'https://github.com/justgithubaccount'
 SOURCES = {
-    'k8s': ('justgithubaccount/app-poly-gitops-k8s', {'README.md', 'clusters/dev/kustomization.yaml', 'clusters/smoke/kustomization.yaml'}),
-    'infra': ('justgithubaccount/app-poly-gitops-infra', {'README.md', 'terraform/timeweb/main.tf', '.github/workflows/timeweb-smoke.yaml'}),
+    'k8s': ('justgithubaccount/app-poly-gitops-k8s', {'README.md', 'clusters/dev/kustomization.yaml', 'clusters/smoke/kustomization.yaml', 'docs/architecture.md', 'tests/test_dev_contract.sh', 'scripts/validate_opa_manifests.py'}),
+    'infra': ('justgithubaccount/app-poly-gitops-infra', {'README.md', 'terraform/timeweb/main.tf', '.github/workflows/timeweb-smoke.yaml', 'docs/ARCHITECTURE.md', 'Taskfile.yaml', 'tests/test_ephemeral_smoke.sh'}),
     'fastapi': ('justgithubaccount/app-poly-gitops-fastapi', {'README.md', 'app/api.py', 'app/core/llm_client.py'}),
 }
 
@@ -53,7 +53,9 @@ def validate(data):
     require(isinstance(projects, list) and len(projects) == 3, 'Exactly three reviewed projects are required')
     require([p.get('id') for p in projects if isinstance(p, dict)] == list(SOURCES), 'Project allowlist/order mismatch')
     for p in projects:
-        keys(p, 'id repository revision visibility license title category problem description boundary tags evidence focus focus_detail')
+        base_fields = 'id repository revision visibility license title category problem description boundary tags evidence focus focus_detail'
+        extra_fields = ' evidence_summary evidence_explanations verification_note' if 'evidence_explanations' in p else ''
+        keys(p, base_fields + extra_fields)
         repo, paths = SOURCES[p['id']]
         require(p['repository'] == repo, 'Repository outside public allowlist')
         require(isinstance(p['revision'], str) and re.fullmatch('[0-9a-f]{40}', p['revision']), 'An exact commit SHA is required')
@@ -64,6 +66,13 @@ def validate(data):
         require(isinstance(p['tags'], list) and len(p['tags']) == 3, 'Three technology labels required')
         for tag in p['tags']:
             plain(tag, 24)
+        if 'evidence_explanations' in p:
+            notes = p['evidence_explanations']
+            require(isinstance(notes, dict) and set(notes) == paths, 'Every evidence file requires one reviewed explanation')
+            plain(p['evidence_summary'], 320)
+            plain(p['verification_note'], 360)
+            for note in notes.values():
+                plain(note, 240)
     return data
 
 
@@ -108,14 +117,21 @@ def website(d):
     i = d['identity']
     project_html = []
     for n, p in enumerate(d['projects'], 1):
-        links = ''.join(f'<li><a href="{evidence_url(p, path)}">{h(path)}</a></li>' for path in p['evidence'])
+        notes = p.get('evidence_explanations', {})
+        links = ''.join(
+            f'<li><a href="{evidence_url(p, path)}">{h(path)}</a>'
+            + (f' <span>{h(notes[path])}</span>' if path in notes else '')
+            + '</li>' for path in p['evidence']
+        )
+        evidence_summary = f'<p>{h(p["evidence_summary"])}</p>' if notes else ''
+        verification_note = f'<p>How to verify: {h(p["verification_note"])}</p>' if notes else ''
         project_html.append(f'''<article class="project" id="{p['id']}">
 <div class="project-art"><img src="assets/art-{p['id']}.svg" alt="" width="600" height="640" loading="lazy"/></div>
 <div class="project-copy"><p class="project-category"><span>0{n}</span> {h(p['category'])}</p>
 <h3>{h(p['title'])}</h3><p class="question">{h(p['problem'])}</p><p>{h(p['description'])}</p>
 <ul class="tags" aria-label="Technologies">{''.join(f'<li>{h(t)}</li>' for t in p['tags'])}</ul>
 <a class="text-link" href="{repo_url(p)}">Explore {h(p['category'].lower())} <span aria-hidden="true">↗</span></a>
-<details><summary>Source evidence &amp; project scope</summary><p>{h(p['boundary'])}</p><p>Public source snapshot: <code>{p['revision'][:12]}</code></p><ul class="evidence">{links}</ul></details></div>
+<details><summary>Source evidence &amp; project scope</summary><p>{h(p['boundary'])}</p>{evidence_summary}<p>Public source snapshot: <code>{p['revision'][:12]}</code></p><ul class="evidence">{links}</ul>{verification_note}</details></div>
 </article>''')
     focus = ''.join(f'<li><span class="focus-number">0{n}</span><h3>{h(p["focus"])}</h3><p>{h(p["focus_detail"])}</p><a href="#{p["id"]}">See the project <span aria-hidden="true">↗</span></a></li>' for n, p in enumerate(d['projects'], 1))
     template = (ROOT / 'templates/index.html').read_text(encoding='utf-8')

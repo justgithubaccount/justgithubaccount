@@ -14,8 +14,8 @@ SITE = 'https://justgithubaccount.github.io/'
 PROFILE = 'https://github.com/justgithubaccount'
 REPOS = {'app-poly-gitops-k8s', 'app-poly-gitops-infra', 'app-poly-gitops-fastapi'}
 EVIDENCE = {
-    'app-poly-gitops-k8s': {'README.md', 'clusters/dev/kustomization.yaml', 'clusters/smoke/kustomization.yaml'},
-    'app-poly-gitops-infra': {'README.md', 'terraform/timeweb/main.tf', '.github/workflows/timeweb-smoke.yaml'},
+    'app-poly-gitops-k8s': {'README.md', 'clusters/dev/kustomization.yaml', 'clusters/smoke/kustomization.yaml', 'docs/architecture.md', 'tests/test_dev_contract.sh', 'scripts/validate_opa_manifests.py'},
+    'app-poly-gitops-infra': {'README.md', 'terraform/timeweb/main.tf', '.github/workflows/timeweb-smoke.yaml', 'docs/ARCHITECTURE.md', 'Taskfile.yaml', 'tests/test_ephemeral_smoke.sh'},
     'app-poly-gitops-fastapi': {'README.md', 'app/api.py', 'app/core/llm_client.py'},
 }
 VOID = {'meta', 'link', 'img', 'br', 'hr', 'input', 'source', 'wbr', 'area', 'base', 'col', 'embed', 'param', 'track'}

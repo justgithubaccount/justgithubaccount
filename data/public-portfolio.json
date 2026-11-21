@@ -15,8 +15,20 @@
       "evidence": [
         "README.md",
         "clusters/dev/kustomization.yaml",
-        "clusters/smoke/kustomization.yaml"
+        "clusters/smoke/kustomization.yaml",
+        "docs/architecture.md",
+        "tests/test_dev_contract.sh",
+        "scripts/validate_opa_manifests.py"
       ],
+      "evidence_explanations": {
+        "README.md": "CI-supported dev and smoke roots, local render commands and unsupported environment boundaries.",
+        "clusters/dev/kustomization.yaml": "Argo CD app composition for namespaces, dev networking, Loki, Grafana, Vector, image updater and tenants.",
+        "clusters/smoke/kustomization.yaml": "Reduced FastAPI, CrewAI and Jaeger desired state for disposable acceptance checks.",
+        "docs/architecture.md": "Reconciliation model, ownership split from provisioning, required secrets and non-live evidence boundary.",
+        "scripts/validate_opa_manifests.py": "Evaluates each rendered Kubernetes resource against OPA policies and rejects reported violations.",
+        "tests/test_dev_contract.sh": "Offline render assertions for tenants, pinned components, OTLP routing and excluded platform resources."
+      },
+      "evidence_summary": "Follow a Git change into two Kustomize environment roots: dev composes networking, observability and tenants; smoke keeps a smaller acceptance stack.",
       "focus": "Reviewable deployments",
       "focus_detail": "Express the desired environment in Git, with explicit application and platform boundaries.",
       "id": "k8s",
@@ -30,6 +42,7 @@
         "Kustomize"
       ],
       "title": "Deployment, made explicit.",
+      "verification_note": "Render both roots, run contract tests and evaluate the rendered manifests with OPA as described in the README. These checks do not verify a running cluster, DNS, certificates or telemetry delivery.",
       "visibility": "PUBLIC"
     },
     {
@@ -39,8 +52,20 @@
       "evidence": [
         "README.md",
         "terraform/timeweb/main.tf",
-        ".github/workflows/timeweb-smoke.yaml"
+        ".github/workflows/timeweb-smoke.yaml",
+        "docs/ARCHITECTURE.md",
+        "Taskfile.yaml",
+        "tests/test_ephemeral_smoke.sh"
       ],
+      "evidence_explanations": {
+        ".github/workflows/timeweb-smoke.yaml": "Opt-in cloud smoke: provision, bootstrap, reconcile, check applications and destroy unless explicitly retained.",
+        "README.md": "Operator prerequisites, workflow purposes, local validation and cleanup boundaries.",
+        "Taskfile.yaml": "Side-effect-labelled plan, bootstrap, apply, status and destroy commands with revision guard.",
+        "docs/ARCHITECTURE.md": "Infrastructure versus GitOps ownership, root selection, recovery flow and evidence limitations.",
+        "terraform/timeweb/main.tf": "Master and worker preset lookups, estimated run-cost precondition and versioned cluster module.",
+        "tests/test_ephemeral_smoke.sh": "Offline assertions for cost guard, versioned roots, secret handling, smoke checks and cleanup contract."
+      },
+      "evidence_summary": "Trace an optional Timeweb cluster from preset selection and estimated-cost guard through Argo CD bootstrap, application smoke checks and default teardown.",
       "focus": "Repeatable environments",
       "focus_detail": "Keep provisioning, bootstrap and cleanup steps visible instead of relying on undocumented setup.",
       "id": "infra",
@@ -54,6 +79,7 @@
         "GitHub Actions"
       ],
       "title": "Infrastructure, repeatable.",
+      "verification_note": "Use the README offline validation commands; do not dispatch cloud workflows or run Terraform apply/destroy to review this copy. A cost estimate is not a billing guarantee, and no live cluster is claimed.",
       "visibility": "PUBLIC"
     },
     {
